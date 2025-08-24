@@ -1,0 +1,878 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Rolling Riches - Mystery Boxes</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            * {
+                box-sizing: border-box;
+                margin: 0;
+                padding: 0;
+            }
+
+            body {
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    BlinkMacSystemFont,
+                    sans-serif;
+                background: #0f0f23;
+                color: #ffffff;
+                line-height: 1.6;
+                overflow-x: hidden;
+            }
+
+            /* Rolling Riches Brand Styling */
+            .rr-header {
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                padding: 20px 0;
+                border-bottom: 2px solid #ff6b6b;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .rr-header::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="%23ffffff" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="%23ffffff" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+                opacity: 0.3;
+            }
+
+            .rr-container {
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 0 20px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .rr-nav {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .rr-logo {
+                font-size: 2rem;
+                font-weight: 700;
+                background: linear-gradient(45deg, #ff6b6b, #feca57);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                text-shadow: 0 0 30px rgba(255, 107, 107, 0.3);
+            }
+
+            .rr-nav-links {
+                display: flex;
+                gap: 30px;
+                list-style: none;
+            }
+
+            .rr-nav-links a {
+                color: #ffffff;
+                text-decoration: none;
+                font-weight: 500;
+                transition: all 0.3s ease;
+                position: relative;
+            }
+
+            .rr-nav-links a:hover {
+                color: #ff6b6b;
+                text-shadow: 0 0 10px rgba(255, 107, 107, 0.5);
+            }
+
+            .rr-nav-links a::after {
+                content: "";
+                position: absolute;
+                bottom: -5px;
+                left: 0;
+                width: 0;
+                height: 2px;
+                background: linear-gradient(45deg, #ff6b6b, #feca57);
+                transition: width 0.3s ease;
+            }
+
+            .rr-nav-links a:hover::after {
+                width: 100%;
+            }
+
+            /* Main Content */
+            .rr-main {
+                padding: 40px 0;
+            }
+
+            .rr-hero {
+                text-align: center;
+                margin-bottom: 50px;
+                padding: 60px 20px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 107, 107, 0.1) 0%,
+                    rgba(254, 202, 87, 0.1) 100%
+                );
+                border-radius: 20px;
+                border: 1px solid rgba(255, 107, 107, 0.2);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .rr-hero::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: radial-gradient(
+                    circle,
+                    rgba(255, 107, 107, 0.1) 0%,
+                    transparent 70%
+                );
+                animation: rotate 20s linear infinite;
+            }
+
+            @keyframes rotate {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .rr-hero-content {
+                position: relative;
+                z-index: 1;
+            }
+
+            .rr-hero h1 {
+                font-size: 3.5rem;
+                font-weight: 700;
+                margin-bottom: 20px;
+                background: linear-gradient(45deg, #ff6b6b, #feca57, #ff6b6b);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                background-size: 200% 100%;
+                animation: shimmer 3s ease-in-out infinite;
+            }
+
+            @keyframes shimmer {
+                0%,
+                100% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+            }
+
+            .rr-hero p {
+                font-size: 1.3rem;
+                opacity: 0.9;
+                max-width: 600px;
+                margin: 0 auto 30px;
+            }
+
+            .rr-cta-button {
+                display: inline-block;
+                padding: 15px 40px;
+                background: linear-gradient(45deg, #ff6b6b, #feca57);
+                color: #ffffff;
+                text-decoration: none;
+                border-radius: 50px;
+                font-weight: 600;
+                font-size: 1.1rem;
+                transition: all 0.3s ease;
+                box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .rr-cta-button::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.2),
+                    transparent
+                );
+                transition: left 0.5s ease;
+            }
+
+            .rr-cta-button:hover::before {
+                left: 100%;
+            }
+
+            .rr-cta-button:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+            }
+
+            /* Widget Integration Section */
+            .rr-widget-section {
+                margin: 60px 0;
+                padding: 40px;
+                background: rgba(255, 255, 255, 0.03);
+                border-radius: 20px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+            }
+
+            .rr-widget-title {
+                font-size: 2.5rem;
+                font-weight: 700;
+                text-align: center;
+                margin-bottom: 30px;
+                background: linear-gradient(45deg, #ff6b6b, #feca57);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+            }
+
+            .rr-widget-container {
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: 16px;
+                padding: 20px;
+                border: 2px solid rgba(255, 107, 107, 0.2);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .rr-widget-container::before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 2px;
+                background: linear-gradient(90deg, #ff6b6b, #feca57, #ff6b6b);
+                background-size: 200% 100%;
+                animation: borderGlow 3s ease-in-out infinite;
+            }
+
+            @keyframes borderGlow {
+                0%,
+                100% {
+                    background-position: 0% 50%;
+                }
+                50% {
+                    background-position: 100% 50%;
+                }
+            }
+
+            .rr-widget-iframe {
+                width: 100%;
+                height: 700px;
+                border: none;
+                border-radius: 12px;
+                background: #1a1a2e;
+            }
+
+            /* Loading State */
+            .rr-loading {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                height: 700px;
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                border-radius: 12px;
+            }
+
+            .rr-spinner {
+                width: 50px;
+                height: 50px;
+                border: 3px solid rgba(255, 107, 107, 0.3);
+                border-top: 3px solid #ff6b6b;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin-bottom: 20px;
+            }
+
+            @keyframes spin {
+                0% {
+                    transform: rotate(0deg);
+                }
+                100% {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .rr-loading-text {
+                color: #ff6b6b;
+                font-size: 1.2rem;
+                font-weight: 600;
+            }
+
+            /* Status Indicator */
+            .rr-status {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 15px;
+                margin-bottom: 20px;
+                padding: 15px;
+                background: rgba(76, 175, 80, 0.1);
+                border: 1px solid rgba(76, 175, 80, 0.3);
+                border-radius: 10px;
+            }
+
+            .rr-status-dot {
+                width: 12px;
+                height: 12px;
+                background: #4caf50;
+                border-radius: 50%;
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+                0%,
+                100% {
+                    opacity: 1;
+                    transform: scale(1);
+                }
+                50% {
+                    opacity: 0.7;
+                    transform: scale(1.1);
+                }
+            }
+
+            .rr-status-text {
+                color: #4caf50;
+                font-weight: 600;
+            }
+
+            /* Footer */
+            .rr-footer {
+                text-align: center;
+                padding: 40px 20px;
+                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                margin-top: 60px;
+                opacity: 0.7;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .rr-nav {
+                    flex-direction: column;
+                    gap: 20px;
+                }
+
+                .rr-nav-links {
+                    gap: 20px;
+                }
+
+                .rr-hero h1 {
+                    font-size: 2.5rem;
+                }
+
+                .rr-widget-section {
+                    padding: 20px;
+                }
+
+                .rr-widget-iframe {
+                    height: 600px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <header class="rr-header">
+            <div class="rr-container">
+                <nav class="rr-nav">
+                    <div class="rr-logo">Rolling Riches</div>
+                    <ul class="rr-nav-links">
+                        <li><a href="#games">Games</a></li>
+                        <li><a href="#mystery-boxes">Mystery Boxes</a></li>
+                        <li><a href="#leaderboard">Leaderboard</a></li>
+                        <li><a href="#rewards">Rewards</a></li>
+                        <li><a href="#support">Support</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main class="rr-main">
+            <div class="rr-container">
+                <section class="rr-hero">
+                    <div class="rr-hero-content">
+                        <h1>Ultimate Mystery Box Experience</h1>
+                        <p>
+                            Unlock rare treasures, legendary items, and
+                            exclusive rewards with our premium mystery box
+                            collection. Every box holds the potential for
+                            extraordinary discoveries.
+                        </p>
+                        <a href="#mystery-boxes" class="rr-cta-button"
+                            >Start Opening Boxes</a
+                        >
+                    </div>
+                </section>
+
+                <section id="mystery-boxes" class="rr-widget-section">
+                    <h2 class="rr-widget-title">Mystery Boxes Collection</h2>
+
+                    <div class="rr-status">
+                        <div class="rr-status-dot"></div>
+                        <span class="rr-status-text"
+                            >Live Integration Active - Partner:
+                            rolling-riches</span
+                        >
+                    </div>
+
+                    <div class="rr-widget-container">
+                        <div class="rr-loading" id="loadingState">
+                            <div class="rr-spinner"></div>
+                            <div class="rr-loading-text">
+                                Loading Mystery Boxes...
+                            </div>
+                        </div>
+                        <iframe
+                            id="mysteryBoxWidget"
+                            class="rr-widget-iframe"
+                            src="http://localhost:5000/widget/iframe?partner=rolling-riches"
+                            title="Rolling Riches Mystery Boxes"
+                            loading="lazy"
+                            style="display: none"
+                        >
+                        </iframe>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="rr-footer">
+            <div class="rr-container">
+                <p>
+                    &copy; 2025 Rolling Riches. All rights reserved. | Powered
+                    by RollingDrop Technology
+                </p>
+            </div>
+        </footer>
+
+        <script>
+            // Widget Integration Manager
+            class RollingRichesIntegration {
+                constructor() {
+                    this.iframe = document.getElementById("mysteryBoxWidget");
+                    this.loadingState = document.getElementById("loadingState");
+                    this.currentUser = null; // Simulate logged in user
+                    this.initializeUser();
+                    this.initializeWidget();
+                    this.setupMessageListener();
+                }
+
+                initializeUser() {
+                    // Simulate a logged-in user for Rolling Riches
+                    this.currentUser = {
+                        id: "user_12345",
+                        username: "TestPlayer",
+                        email: "testplayer@rollingriches.com",
+                        balance: 1500.0,
+                        currency: "USD",
+                    };
+                    console.log(
+                        "👤 User initialized:",
+                        this.currentUser.username,
+                    );
+                }
+
+                initializeWidget() {
+                    console.log(
+                        "🎮 Rolling Riches - Initializing mystery box widget...",
+                    );
+
+                    // Show widget after short delay to ensure proper loading
+                    setTimeout(() => {
+                        this.showWidget();
+                    }, 2000);
+
+                    // Fallback timeout
+                    setTimeout(() => {
+                        if (this.loadingState.style.display !== "none") {
+                            this.showWidget();
+                        }
+                    }, 5000);
+                }
+
+                showWidget() {
+                    this.loadingState.style.display = "none";
+                    this.iframe.style.display = "block";
+                    console.log("✅ Widget displayed successfully");
+                }
+
+                setupMessageListener() {
+                    window.addEventListener("message", (event) => {
+                        // Security check - accept messages from localhost and replit domains
+                        const allowedOrigins = [
+                            "http://localhost:5000",
+                            "https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev",
+                        ];
+                        if (!allowedOrigins.includes(event.origin)) return;
+
+                        if (event.data.type === "rollingdrop_widget_loaded") {
+                            console.log("📦 Widget loaded:", event.data);
+                            this.showWidget();
+                            this.showSuccessNotification();
+                        }
+
+                        if (event.data.type === "mystery_box_purchase") {
+                            console.log(
+                                "💳 Purchase request received:",
+                                event.data,
+                            );
+                            this.handlePurchaseRequest(event.data.data);
+                        }
+                    });
+                }
+
+                async handlePurchaseRequest(purchaseData) {
+                    console.log(
+                        "💰 Processing purchase request:",
+                        purchaseData,
+                    );
+
+                    // Validate user has sufficient balance
+                    if (this.currentUser.balance < purchaseData.price) {
+                        this.sendPaymentFailure(
+                            purchaseData,
+                            "Insufficient balance",
+                        );
+                        return;
+                    }
+
+                    // Simulate payment processing
+                    this.showPaymentModal(purchaseData);
+
+                    try {
+                        // Simulate payment delay
+                        await this.simulatePayment(purchaseData);
+
+                        // Deduct balance
+                        this.currentUser.balance -= purchaseData.price;
+
+                        // Send purchase details to RollingDrop for box opening
+                        const purchaseResult =
+                            await this.sendPurchaseToRollingDrop(purchaseData);
+
+                        // Notify widget of successful payment
+                        this.sendPaymentSuccess(purchaseData, purchaseResult);
+
+                        // Show success and update inventory
+                        this.showPurchaseSuccess(purchaseData, purchaseResult);
+                    } catch (error) {
+                        console.error("Payment processing failed:", error);
+                        this.sendPaymentFailure(purchaseData, error.message);
+                    }
+                }
+
+                showPaymentModal(purchaseData) {
+                    const modal = document.createElement("div");
+                    modal.id = "paymentModal";
+                    modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                `;
+
+                    modal.innerHTML = `
+                    <div style="background: white; border-radius: 15px; padding: 30px; max-width: 400px; text-align: center; position: relative;">
+                        <h3 style="margin: 0 0 20px; color: #333;">Processing Payment</h3>
+                        <div style="margin: 20px 0;">
+                            <img src="${purchaseData.boxImage || "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200"}" 
+                                 style="width: 80px; height: 80px; object-fit: cover; border-radius: 10px; margin-bottom: 15px;">
+                            <div style="font-size: 1.2rem; font-weight: 600; color: #333; margin-bottom: 10px;">${purchaseData.boxName}</div>
+                            <div style="font-size: 1.5rem; color: #ff6b6b; font-weight: 700;">$${purchaseData.price}</div>
+                        </div>
+                        <div style="margin: 20px 0;">
+                            <div style="display: inline-block; width: 40px; height: 40px; border: 3px solid #f3f3f3; border-top: 3px solid #ff6b6b; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                            <div style="margin-top: 15px; color: #666;">Processing payment...</div>
+                        </div>
+                        <div style="font-size: 0.9rem; color: #888; margin-top: 20px;">
+                            Balance: $${this.currentUser.balance.toFixed(2)} → $${(this.currentUser.balance - purchaseData.price).toFixed(2)}
+                        </div>
+                    </div>
+                `;
+
+                    const style = document.createElement("style");
+                    style.textContent = `
+                    @keyframes spin {
+                        0% { transform: rotate(0deg); }
+                        100% { transform: rotate(360deg); }
+                    }
+                `;
+                    document.head.appendChild(style);
+
+                    document.body.appendChild(modal);
+                }
+
+                async simulatePayment(purchaseData) {
+                    // Simulate payment processing time
+                    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+                    // 95% success rate for demo
+                    if (Math.random() < 0.95) {
+                        return true;
+                    } else {
+                        throw new Error("Payment gateway timeout");
+                    }
+                }
+
+                async sendPurchaseToRollingDrop(purchaseData) {
+                    const purchasePayload = {
+                        partner: "rolling-riches",
+                        userId: this.currentUser.id,
+                        boxId: purchaseData.boxId,
+                        transactionId:
+                            "tx_" +
+                            Date.now() +
+                            "_" +
+                            Math.random().toString(36).substr(2, 9),
+                        amount: purchaseData.price,
+                        paymentMethod: "rolling_riches_balance",
+                        timestamp: new Date().toISOString(),
+                    };
+
+                    const response = await fetch(
+                        "http://localhost:5000/api/partner/purchase",
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(purchasePayload),
+                        },
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Failed to process box opening");
+                    }
+
+                    return await response.json();
+                }
+
+                sendPaymentSuccess(purchaseData, boxResult) {
+                    this.iframe.contentWindow.postMessage(
+                        {
+                            type: "payment_completed",
+                            data: {
+                                ...purchaseData,
+                                boxResult: boxResult,
+                                transactionId: boxResult.purchaseId,
+                            },
+                        },
+                        "*",
+                    );
+                }
+
+                sendPaymentFailure(purchaseData, error) {
+                    this.iframe.contentWindow.postMessage(
+                        {
+                            type: "payment_failed",
+                            data: {
+                                ...purchaseData,
+                                error: error,
+                            },
+                        },
+                        "*",
+                    );
+
+                    this.showPaymentError(error);
+                }
+
+                showPurchaseSuccess(purchaseData, boxResult) {
+                    // Close payment modal
+                    const modal = document.getElementById("paymentModal");
+                    if (modal) modal.remove();
+
+                    // Show success notification with item details
+                    const successModal = document.createElement("div");
+                    successModal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                `;
+
+                    const item = boxResult.item;
+                    successModal.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #4caf50, #45a049); border-radius: 15px; padding: 30px; max-width: 450px; text-align: center; color: white; position: relative;">
+                        <div style="font-size: 2rem; margin-bottom: 15px;">🎉</div>
+                        <h3 style="margin: 0 0 20px; color: white;">Box Opened Successfully!</h3>
+                        <div style="background: rgba(255, 255, 255, 0.1); border-radius: 10px; padding: 20px; margin: 20px 0;">
+                            <img src="${item.icon || "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=200"}" 
+                                 style="width: 100px; height: 100px; object-fit: cover; border-radius: 10px; margin-bottom: 15px;">
+                            <div style="font-size: 1.3rem; font-weight: 700; margin-bottom: 10px;">${item.name}</div>
+                            <div style="background: rgba(139, 92, 246, 0.8); color: white; padding: 4px 12px; border-radius: 15px; font-size: 0.9rem; display: inline-block; margin-bottom: 10px;">${item.rarity.toUpperCase()}</div>
+                            <div style="font-size: 1.1rem; opacity: 0.9;">Value: $${item.value || "0.00"}</div>
+                        </div>
+                        <div style="margin: 20px 0; font-size: 0.9rem; opacity: 0.9;">
+                            Item added to your inventory
+                        </div>
+                        <button onclick="this.parentElement.parentElement.remove()" style="background: white; color: #4caf50; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer; font-size: 1rem;">
+                            Continue Playing
+                        </button>
+                    </div>
+                `;
+
+                    document.body.appendChild(successModal);
+
+                    // Auto-close after 10 seconds
+                    setTimeout(() => {
+                        if (successModal.parentElement) {
+                            successModal.remove();
+                        }
+                    }, 10000);
+
+                    // Update balance display
+                    this.updateBalanceDisplay();
+                }
+
+                showPaymentError(error) {
+                    const modal = document.getElementById("paymentModal");
+                    if (modal) modal.remove();
+
+                    const errorModal = document.createElement("div");
+                    errorModal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(0, 0, 0, 0.8);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                `;
+
+                    errorModal.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #f44336, #d32f2f); border-radius: 15px; padding: 30px; max-width: 400px; text-align: center; color: white;">
+                        <div style="font-size: 2rem; margin-bottom: 15px;">❌</div>
+                        <h3 style="margin: 0 0 20px; color: white;">Payment Failed</h3>
+                        <div style="margin: 20px 0; opacity: 0.9;">${error}</div>
+                        <button onclick="this.parentElement.parentElement.remove()" style="background: white; color: #f44336; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer;">
+                            Try Again
+                        </button>
+                    </div>
+                `;
+
+                    document.body.appendChild(errorModal);
+
+                    setTimeout(() => {
+                        if (errorModal.parentElement) {
+                            errorModal.remove();
+                        }
+                    }, 5000);
+                }
+
+                updateBalanceDisplay() {
+                    // Update balance in header if element exists
+                    const balanceElement =
+                        document.querySelector(".user-balance");
+                    if (balanceElement) {
+                        balanceElement.textContent = `$${this.currentUser.balance.toFixed(2)}`;
+                    }
+                }
+
+                showSuccessNotification() {
+                    const notification = document.createElement("div");
+                    notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(45deg, #4caf50, #45a049);
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+                    z-index: 10000;
+                    font-weight: 600;
+                    font-size: 14px;
+                    animation: slideIn 0.3s ease-out;
+                `;
+
+                    const style = document.createElement("style");
+                    style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                `;
+                    document.head.appendChild(style);
+
+                    notification.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <div style="width: 8px; height: 8px; background: white; border-radius: 50%; animation: pulse 2s infinite;"></div>
+                        <span>Mystery Boxes Ready!</span>
+                    </div>
+                `;
+
+                    document.body.appendChild(notification);
+
+                    setTimeout(() => {
+                        notification.remove();
+                        style.remove();
+                    }, 4000);
+                }
+            }
+
+            // Initialize when DOM is ready
+            document.addEventListener("DOMContentLoaded", () => {
+                console.log(
+                    "🚀 Rolling Riches staging integration initializing...",
+                );
+                new RollingRichesIntegration();
+            });
+
+            // Smooth scrolling for navigation
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(
+                        this.getAttribute("href"),
+                    );
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: "smooth",
+                            block: "start",
+                        });
+                    }
+                });
+            });
+
+            console.log("🎯 Rolling Riches staging integration loaded");
+        </script>
+    </body>
+</html>

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2B Integration Test - Rolling Riches</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .container {
+            background: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .api-test {
+            background: #333;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        button {
+            background: #0079F2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0066cc;
+        }
+        .response {
+            background: #111;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .box-widget {
+            border: 2px solid #0079F2;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a);
+        }
+        .box-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .box-card {
+            background: #333;
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid #555;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .box-card:hover {
+            transform: translateY(-2px);
+            border-color: #0079F2;
+        }
+        .rarity-epic { border-left: 4px solid #8b5cf6; }
+        .rarity-legendary { border-left: 4px solid #f59e0b; }
+        .rarity-rare { border-left: 4px solid #10b981; }
+        .rarity-common { border-left: 4px solid #6b7280; }
+    </style>
+</head>
+<body>
+    <h1>B2B API Integration Test - Rolling Riches</h1>
+    
+    <div class="container">
+        <h2>API Configuration</h2>
+        <p><strong>Base URL:</strong> <span id="baseUrl">http://localhost:5000</span></p>
+        <p><strong>API Key:</strong> <input type="text" id="apiKey" placeholder="Enter your API key" style="width: 300px; padding: 5px;"></p>
+        <button onclick="saveConfig()">Save Configuration</button>
+    </div>
+
+    <div class="container">
+        <h2>API Endpoints Test</h2>
+        
+        <div class="api-test">
+            <h3>1. Test Authentication</h3>
+            <button onclick="testAuth()">Test API Key</button>
+            <div id="auth-response" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <h3>2. Get All Boxes</h3>
+            <button onclick="getBoxes()">Fetch Boxes</button>
+            <div id="boxes-response" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <h3>3. Get Featured Boxes</h3>
+            <button onclick="getFeaturedBoxes()">Fetch Featured Boxes</button>
+            <div id="featured-response" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <h3>4. Get Box Details</h3>
+            <input type="number" id="boxId" placeholder="Box ID" style="width: 100px; padding: 5px;">
+            <button onclick="getBoxDetails()">Get Box Details</button>
+            <div id="details-response" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <h3>5. Open Box</h3>
+            <input type="number" id="openBoxId" placeholder="Box ID" style="width: 100px; padding: 5px;">
+            <button onclick="openBox()">Open Box</button>
+            <div id="open-response" class="response"></div>
+        </div>
+
+        <div class="api-test">
+            <h3>6. Get API Statistics</h3>
+            <button onclick="getStats()">Get Stats</button>
+            <div id="stats-response" class="response"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Widget Integration Demo</h2>
+        <div class="box-widget">
+            <h3>Mystery Boxes Available</h3>
+            <div id="widget-boxes" class="box-grid">
+                <p>Click "Load Widget" to display available boxes</p>
+            </div>
+            <button onclick="loadWidget()">Load Widget</button>
+        </div>
+    </div>
+
+    <script>
+        let config = {
+            baseUrl: 'http://localhost:5000',
+            apiKey: ''
+        };
+
+        // Load saved config
+        if (localStorage.getItem('b2b-config')) {
+            config = JSON.parse(localStorage.getItem('b2b-config'));
+            document.getElementById('baseUrl').textContent = config.baseUrl;
+            document.getElementById('apiKey').value = config.apiKey;
+        }
+
+        function saveConfig() {
+            config.apiKey = document.getElementById('apiKey').value;
+            localStorage.setItem('b2b-config', JSON.stringify(config));
+            alert('Configuration saved!');
+        }
+
+        async function apiRequest(endpoint, options = {}) {
+            const url = `${config.baseUrl}${endpoint}`;
+            const headers = {
+                'Content-Type': 'application/json',
+                'X-API-Key': config.apiKey,
+                ...options.headers
+            };
+
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    headers
+                });
+                
+                const data = await response.json();
+                return {
+                    status: response.status,
+                    ok: response.ok,
+                    data
+                };
+            } catch (error) {
+                return {
+                    status: 0,
+                    ok: false,
+                    error: error.message
+                };
+            }
+        }
+
+        async function testAuth() {
+            const response = await apiRequest('/api/v1/boxes');
+            document.getElementById('auth-response').textContent = 
+                `Status: ${response.status}\n${JSON.stringify(response.data || response.error, null, 2)}`;
+        }
+
+        async function getBoxes() {
+            const response = await apiRequest('/api/v1/boxes');
+            document.getElementById('boxes-response').textContent = 
+                `Status: ${response.status}\n${JSON.stringify(response.data, null, 2)}`;
+        }
+
+        async function getFeaturedBoxes() {
+            const response = await apiRequest('/api/v1/boxes/featured');
+            document.getElementById('featured-response').textContent = 
+                `Status: ${response.status}\n${JSON.stringify(response.data, null, 2)}`;
+        }
+
+        async function getBoxDetails() {
+            const boxId = document.getElementById('boxId').value;
+            if (!boxId) {
+                alert('Please enter a Box ID');
+                return;
+            }
+            const response = await apiRequest(`/api/v1/boxes/${boxId}`);
+            document.getElementById('details-response').textContent = 
+                `Status: ${response.status}\n${JSON.stringify(response.data, null, 2)}`;
+        }
+
+        async function openBox() {
+            const boxId = document.getElementById('openBoxId').value;
+            if (!boxId) {
+                alert('Please enter a Box ID');
+                return;
+            }
+            const response = await apiRequest('/api/v1/open-box', {
+                method: 'POST',
+                body: JSON.stringify({ boxId: parseInt(boxId) })
+            });
+            document.getElementById('open-response').textContent = 
+                `Status: ${response.status}\n${JSON.stringify(response.data, null, 2)}`;
+        }
+
+        async function getStats() {
+            const response = await apiRequest('/api/v1/stats');
+            document.getElementById('stats-response').textContent = 
+                `Status: ${response.status}\n${JSON.stringify(response.data, null, 2)}`;
+        }
+
+        async function loadWidget() {
+            const response = await apiRequest('/api/v1/boxes');
+            if (response.ok && response.data) {
+                const widgetContainer = document.getElementById('widget-boxes');
+                widgetContainer.innerHTML = '';
+                
+                response.data.forEach(box => {
+                    const boxCard = document.createElement('div');
+                    boxCard.className = `box-card rarity-${box.rarity}`;
+                    boxCard.innerHTML = `
+                        <h4>${box.name}</h4>
+                        <p>${box.description}</p>
+                        <p><strong>Price:</strong> $${box.price}</p>
+                        <p><strong>Rarity:</strong> ${box.rarity}</p>
+                        <button onclick="openBoxFromWidget(${box.id})" style="width: 100%;">Open Box</button>
+                    `;
+                    widgetContainer.appendChild(boxCard);
+                });
+            }
+        }
+
+        async function openBoxFromWidget(boxId) {
+            const response = await apiRequest('/api/v1/open-box', {
+                method: 'POST',
+                body: JSON.stringify({ boxId })
+            });
+            
+            if (response.ok) {
+                alert(`Box opened! You received: ${response.data.item.name} (${response.data.item.rarity})`);
+            } else {
+                alert(`Error opening box: ${response.data?.message || 'Unknown error'}`);
+            }
+        }
+    </script>
+</body>
+</html>

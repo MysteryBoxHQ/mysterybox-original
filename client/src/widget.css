@@ -1,0 +1,377 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Widget-specific dark theme variables */
+:root {
+  --widget-bg: #0d1117;
+  --widget-card: #1e2328;
+  --widget-border: #2a2d33;
+  --widget-text: #e6edf3;
+  --widget-text-muted: #8b949e;
+  --widget-accent: #58a6ff;
+  --widget-success: #238636;
+  --widget-warning: #f85149;
+}
+
+/* Base widget styling */
+.widget-container {
+  @apply max-w-6xl mx-auto p-0;
+  background: var(--widget-bg) !important;
+  color: var(--widget-text) !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Tab navigation */
+.tab-nav {
+  @apply flex border-b mb-6;
+  border-color: var(--widget-border);
+}
+
+.tab-button {
+  @apply px-4 py-2 font-medium text-sm border-b-2 border-transparent transition-colors cursor-pointer;
+  color: var(--widget-text-muted);
+}
+
+.tab-button.active {
+  @apply border-blue-500;
+  color: var(--widget-accent);
+}
+
+.tab-button:hover:not(.active) {
+  color: var(--widget-text);
+}
+
+/* Mystery boxes grid */
+.boxes-grid {
+  @apply grid gap-4 p-4;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.mystery-box-card {
+  @apply rounded-lg overflow-hidden transition-all duration-200 cursor-pointer;
+  background: var(--widget-card);
+  border: 1px solid var(--widget-border);
+}
+
+.mystery-box-card:hover {
+  @apply transform -translate-y-1;
+  border-color: #3d4147;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.box-image {
+  @apply relative h-48 overflow-hidden;
+}
+
+.box-image img {
+  @apply w-full h-full object-cover transition-transform duration-300;
+}
+
+.mystery-box-card:hover .box-image img {
+  @apply scale-105;
+}
+
+.box-rarity {
+  @apply absolute top-2 right-2 px-2 py-1 text-xs font-bold rounded uppercase;
+}
+
+.rarity-common { @apply bg-gray-500 text-white; }
+.rarity-uncommon { @apply bg-green-500 text-white; }
+.rarity-rare { @apply bg-blue-500 text-white; }
+.rarity-epic { @apply bg-purple-500 text-white; }
+.rarity-legendary { @apply bg-orange-500 text-white; }
+.rarity-mythical { @apply bg-red-500 text-white; }
+
+.box-content {
+  @apply p-4;
+}
+
+.box-title {
+  @apply text-lg font-semibold mb-2;
+  color: var(--widget-text);
+}
+
+.box-description {
+  @apply text-sm mb-4;
+  color: var(--widget-text-muted);
+}
+
+.box-price {
+  @apply text-xl font-bold mb-4;
+  color: var(--widget-accent);
+}
+
+.open-box-btn {
+  @apply w-full py-2 px-4 rounded-md font-semibold text-white transition-all duration-200;
+  background: linear-gradient(#28353e, #28353e) padding-box, linear-gradient(to right, #e93590, #fa8d64) border-box;
+  border: 2px solid transparent;
+}
+
+.open-box-btn:hover {
+  @apply transform -translate-y-1;
+  filter: brightness(1.1);
+}
+
+/* Inventory grid */
+.inventory-grid {
+  @apply grid gap-4 p-4;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+}
+
+.inventory-item {
+  @apply rounded-lg overflow-hidden transition-all duration-200 cursor-pointer;
+  background: var(--widget-card);
+  border: 1px solid var(--widget-border);
+}
+
+.inventory-item:hover {
+  @apply transform -translate-y-1;
+  border-color: #3d4147;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.inventory-image {
+  @apply relative h-32 overflow-hidden;
+}
+
+.inventory-item img {
+  @apply w-full h-full object-cover transition-transform duration-300;
+}
+
+.inventory-item:hover img {
+  @apply scale-105;
+}
+
+.inventory-content {
+  @apply p-3;
+}
+
+.inventory-title {
+  @apply text-sm font-semibold mb-2;
+  color: var(--widget-text);
+}
+
+.inventory-value {
+  @apply text-lg font-bold;
+  color: var(--widget-accent);
+}
+
+/* Battles section */
+.battles-header {
+  @apply flex justify-between items-center mb-5;
+}
+
+.battles-title {
+  @apply text-xl font-semibold;
+  color: var(--widget-text);
+}
+
+.battles-subtitle {
+  @apply text-sm mt-1;
+  color: var(--widget-text-muted);
+}
+
+.create-battle-btn {
+  @apply px-4 py-2 rounded-md font-semibold text-white transition-all duration-200;
+  background: linear-gradient(#28353e, #28353e) padding-box, linear-gradient(to right, #e93590, #fa8d64) border-box;
+  border: 2px solid transparent;
+}
+
+.create-battle-btn:hover {
+  @apply transform -translate-y-1;
+  filter: brightness(1.1);
+}
+
+.create-battle-form {
+  @apply rounded-lg p-5 mb-5 hidden;
+  background: var(--widget-card);
+  border: 1px solid var(--widget-border);
+}
+
+.create-battle-form.active {
+  @apply block;
+}
+
+.form-title {
+  @apply text-lg font-semibold mb-4;
+  color: var(--widget-text);
+}
+
+.form-group {
+  @apply mb-4;
+}
+
+.form-label {
+  @apply block text-sm font-semibold mb-2;
+  color: var(--widget-text);
+}
+
+.form-input, .form-select {
+  @apply w-full px-3 py-2 rounded border text-sm;
+  background: var(--widget-bg);
+  border-color: var(--widget-border);
+  color: var(--widget-text);
+}
+
+.form-input:focus, .form-select:focus {
+  @apply outline-none;
+  border-color: var(--widget-accent);
+}
+
+.form-select option {
+  background: var(--widget-bg);
+  color: var(--widget-text);
+}
+
+.form-grid {
+  @apply grid grid-cols-2 gap-4;
+}
+
+.form-actions {
+  @apply flex gap-3 justify-end;
+}
+
+.cancel-btn {
+  @apply px-4 py-2 rounded-md font-semibold text-white;
+  background: #6e7681;
+}
+
+.submit-btn {
+  @apply px-4 py-2 rounded-md font-semibold text-white;
+  background: linear-gradient(#28353e, #28353e) padding-box, linear-gradient(to right, #e93590, #fa8d64) border-box;
+  border: 2px solid transparent;
+}
+
+/* Battle cards */
+.battles-list {
+  @apply space-y-4;
+}
+
+.battle-card {
+  @apply rounded-lg p-4;
+  background: var(--widget-card);
+  border: 1px solid var(--widget-border);
+}
+
+.battle-title {
+  @apply text-lg font-semibold mb-3;
+  color: var(--widget-text);
+}
+
+.battle-participants {
+  @apply flex items-center justify-center gap-4 mb-4;
+}
+
+.participant {
+  @apply text-center;
+  color: var(--widget-text);
+}
+
+.vs-divider {
+  @apply text-sm font-bold px-3 py-1 rounded;
+  background: var(--widget-accent);
+  color: white;
+}
+
+.battle-info {
+  @apply text-center space-y-1 mb-4;
+  color: var(--widget-text-muted);
+}
+
+.join-battle-btn {
+  @apply w-full py-2 px-4 rounded-md font-semibold text-white transition-all duration-200;
+  background: linear-gradient(#28353e, #28353e) padding-box, linear-gradient(to right, #e93590, #fa8d64) border-box;
+  border: 2px solid transparent;
+}
+
+.join-battle-btn:hover {
+  @apply transform -translate-y-1;
+  filter: brightness(1.1);
+}
+
+.battle-in-progress {
+  @apply text-center font-semibold;
+  color: var(--widget-warning);
+}
+
+/* Leaderboard */
+.leaderboard-table {
+  @apply w-full border-collapse rounded-lg overflow-hidden;
+  background: var(--widget-card);
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  @apply p-4 text-left;
+  border-bottom: 1px solid var(--widget-border);
+}
+
+.leaderboard-table th {
+  @apply font-semibold;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--widget-text);
+}
+
+.leaderboard-table td {
+  color: var(--widget-text);
+}
+
+/* Purchase history */
+.history-item {
+  @apply rounded-lg p-4 mb-4 flex items-center gap-4;
+  background: var(--widget-card);
+}
+
+.history-item img {
+  @apply w-15 h-15 object-cover rounded-lg;
+}
+
+.history-details {
+  @apply flex-1;
+}
+
+.history-details h4 {
+  color: var(--widget-text);
+}
+
+.history-amount {
+  @apply font-semibold;
+  color: var(--widget-accent);
+}
+
+.history-date {
+  @apply text-sm;
+  color: var(--widget-text-muted);
+}
+
+/* Loading and empty states */
+.loading {
+  @apply flex flex-col items-center justify-center py-12;
+}
+
+.spinner {
+  @apply w-8 h-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin mb-4;
+}
+
+.empty-state {
+  @apply text-center py-16;
+  color: var(--widget-text-muted);
+}
+
+.empty-state h3 {
+  @apply text-lg font-semibold mb-2;
+}
+
+/* Notifications */
+.notification {
+  @apply fixed top-4 right-4 px-4 py-2 rounded-lg font-medium text-white z-50;
+}
+
+.notification.success {
+  background: var(--widget-success);
+}
+
+.notification.error {
+  background: var(--widget-warning);
+}

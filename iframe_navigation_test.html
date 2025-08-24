@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iframe Navigation Test - Mystery Box Integration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #1a1a1a;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 8px;
+        }
+        .iframe-container {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #444;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .navigation-log {
+            background: #333;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            background: #444;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .success { background: #2d5a2d; }
+        .info { background: #2d4a5a; }
+        .warning { background: #5a4a2d; }
+        h2 {
+            color: #58a6ff;
+            margin-bottom: 15px;
+        }
+        .test-buttons {
+            margin: 20px 0;
+        }
+        button {
+            background: #58a6ff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #4a8cdd;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.success { background: #2d5a2d; }
+        .status.pending { background: #5a4a2d; }
+        .status.error { background: #5a2d2d; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mystery Box Integration Navigation Test</h1>
+        <p>Testing iframe widget navigation to box opening page with identical UI/UX as whitelabel platform.</p>
+
+        <div class="test-section">
+            <h2>Test 1: Iframe Widget with Navigation <span id="test1-status" class="status pending">PENDING</span></h2>
+            <p>This iframe should navigate to the box opening page when clicking on a box instead of showing popup alerts.</p>
+            
+            <div class="test-buttons">
+                <button onclick="reloadIframe()">Reload Widget</button>
+                <button onclick="testDirectNavigation()">Test Direct Navigation</button>
+                <button onclick="clearLog()">Clear Log</button>
+            </div>
+
+            <div class="iframe-container">
+                <iframe id="testIframe" src="/widget/iframe?partner=casino-partner"></iframe>
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Test 2: Direct Box Opening Access <span id="test2-status" class="status pending">PENDING</span></h2>
+            <p>Testing direct access to box opening page without authentication requirement.</p>
+            
+            <div class="test-buttons">
+                <button onclick="testBoxOpening(43)">Test Box 43</button>
+                <button onclick="testBoxOpening(41)">Test Box 41</button>
+                <button onclick="testBoxOpening(45)">Test Box 45</button>
+            </div>
+            
+            <div id="box-opening-result" style="min-height: 100px; background: #333; border-radius: 4px; padding: 15px;">
+                Click a test button to check box opening page accessibility...
+            </div>
+        </div>
+
+        <div class="test-section">
+            <h2>Navigation Event Log</h2>
+            <div id="navigationLog" class="navigation-log">
+                <div class="log-entry info">Ready to test navigation flows...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let logCounter = 0;
+
+        // Listen for iframe navigation messages
+        window.addEventListener('message', function(event) {
+            logMessage(`Received message from origin ${event.origin}: ${JSON.stringify(event.data)}`, 'info');
+            
+            if (event.data && event.data.type === 'navigate') {
+                logMessage(`Navigation request to: ${event.data.url}`, 'success');
+                document.getElementById('test1-status').className = 'status success';
+                document.getElementById('test1-status').textContent = 'SUCCESS';
+                
+                // Handle navigation - open in new tab for testing
+                const fullUrl = window.location.origin + event.data.url;
+                window.open(fullUrl, '_blank');
+                logMessage(`Opened in new tab: ${fullUrl}`, 'success');
+            } else {
+                logMessage(`Unknown message type: ${event.data?.type || 'undefined'}`, 'warning');
+            }
+        }, false);
+
+        function logMessage(message, type = 'info') {
+            const log = document.getElementById('navigationLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        function reloadIframe() {
+            const iframe = document.getElementById('testIframe');
+            iframe.src = iframe.src;
+            logMessage('Reloading iframe widget...', 'info');
+            document.getElementById('test1-status').className = 'status pending';
+            document.getElementById('test1-status').textContent = 'PENDING';
+        }
+
+        function testDirectNavigation() {
+            const testUrl = '/box-opening/43';
+            logMessage(`Testing direct navigation to: ${testUrl}`, 'info');
+            window.open(testUrl, '_blank');
+        }
+
+        function clearLog() {
+            document.getElementById('navigationLog').innerHTML = '<div class="log-entry info">Log cleared...</div>';
+            logCounter = 0;
+        }
+
+        async function testBoxOpening(boxId) {
+            const url = `/box-opening/${boxId}`;
+            const resultDiv = document.getElementById('box-opening-result');
+            
+            logMessage(`Testing box opening accessibility: ${url}`, 'info');
+            resultDiv.innerHTML = '<div style="color: #58a6ff;">Testing accessibility...</div>';
+
+            try {
+                const response = await fetch(url);
+                const statusText = response.ok ? 'SUCCESS' : 'ERROR';
+                const statusClass = response.ok ? 'success' : 'error';
+                
+                document.getElementById('test2-status').className = `status ${statusClass}`;
+                document.getElementById('test2-status').textContent = statusText;
+
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div style="color: #4ade80;">✓ Box opening page accessible (${response.status})</div>
+                        <div style="margin-top: 10px;">
+                            <a href="${url}" target="_blank" style="color: #58a6ff;">Open Box ${boxId} in new tab</a>
+                        </div>
+                    `;
+                    logMessage(`Box ${boxId} opening page accessible (${response.status})`, 'success');
+                } else {
+                    resultDiv.innerHTML = `<div style="color: #f87171;">✗ Failed to access box opening page (${response.status})</div>`;
+                    logMessage(`Failed to access box ${boxId} (${response.status})`, 'warning');
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<div style="color: #f87171;">✗ Network error: ${error.message}</div>`;
+                logMessage(`Network error testing box ${boxId}: ${error.message}`, 'warning');
+                document.getElementById('test2-status').className = 'status error';
+                document.getElementById('test2-status').textContent = 'ERROR';
+            }
+        }
+
+        // Initial test
+        setTimeout(() => {
+            logMessage('Iframe widget loaded, ready for testing...', 'info');
+        }, 2000);
+    </script>
+</body>
+</html>

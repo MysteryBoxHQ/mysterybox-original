@@ -1,0 +1,181 @@
+{
+    "boxes": [
+        {
+            "id": 45,
+            "name": "Celestial Guardian",
+            "description": "Mystical space collection featuring cosmic artifacts and stellar items.",
+            "price": "22.09",
+            "originalPrice": "22.09",
+            "rarity": "common",
+            "imageUrl": "/api/cdn/images/1748957429409_switchUP.webp",
+            "backgroundUrl": "",
+            "featured": true
+        },
+        {
+            "id": 44,
+            "name": "PS games",
+            "description": "Epic aviation collection with legendary aircraft and pilot gear.",
+            "price": "29.89",
+            "originalPrice": "29.89",
+            "rarity": "epic",
+            "imageUrl": "/api/cdn/images/1748957504598_games.webp",
+            "backgroundUrl": "",
+            "featured": true
+        },
+        {
+            "id": 43,
+            "name": "LV",
+            "description": "Action-packed collection featuring combat gear and tactical items.",
+            "price": "1999.00",
+            "originalPrice": "1999.00",
+            "rarity": "mythical",
+            "imageUrl": "/api/cdn/images/1748957529705_monogram.webp",
+            "backgroundUrl": "",
+            "featured": true
+        },
+        {
+            "id": 46,
+            "name": "Higround Gaming",
+            "description": "Good ol' games",
+            "price": "18.44",
+            "originalPrice": "18.44",
+            "rarity": "rare",
+            "imageUrl": "/api/cdn/images/1748957219599_xbox.webp",
+            "backgroundUrl": "",
+            "featured": true
+        },
+        {
+            "id": 48,
+            "name": "Bags",
+            "description": "A collection of bags",
+            "price": "11500.00",
+            "originalPrice": "11500.00",
+            "rarity": "epic",
+            "imageUrl": "/api/cdn/images/1748957179252_bags.webp",
+            "backgroundUrl": "",
+            "featured": true
+        },
+        {
+            "id": 50,
+            "name": "Jordan 4",
+            "description": "Samsung ",
+            "price": "29.99",
+            "originalPrice": "29.99",
+            "rarity": "epic",
+            "imageUrl": "/api/cdn/images/1748957343113_jordan4.webp",
+            "backgroundUrl": "https://images.samsung.com/is/image/samsung/assets/global/about-us/brand/logo/300_186_4.png",
+            "featured": true
+        },
+        {
+            "id": 41,
+            "name": "Aquatic Arcana",
+            "description": "Dive into this underwater-themed collection featuring rare aquatic items.",
+            "price": "3.43",
+            "originalPrice": "3.43",
+            "rarity": "common",
+            "imageUrl": "/api/cdn/images/1748956957888_5331a900378cb512d74bb67e9148fcb8.webp",
+            "backgroundUrl": "",
+            "featured": true
+        },
+        {
+            "id": 49,
+            "name": "Gucci Gang",
+            "description": "Gucci merchandise",
+            "price": "7000.00",
+            "originalPrice": "7000.00",
+            "rarity": "legendary",
+            "imageUrl": "/api/cdn/images/1748957249753_gucci.webp",
+            "backgroundUrl": "",
+            "featured": true
+        },
+        {
+            "id": 52,
+            "name": "Apple eBox Boosted",
+            "description": "Premium Apple ecosystem products featuring the latest iPhones, MacBooks, and accessories",
+            "price": "49.99",
+            "originalPrice": "49.99",
+            "rarity": "legendary",
+            "imageUrl": "/api/cdn/images/1748957398837_appleBoxGold.png",
+            "backgroundUrl": "https://www.apple.com/ac/structured-data/images/knowledge_graph_logo.png",
+            "featured": false
+        },
+        {
+            "id": 54,
+            "name": "Classic Mystery Box",
+            "description": "A classic box with everyday items and surprises",
+            "price": "9.99",
+            "originalPrice": "9.99",
+            "rarity": "common",
+            "imageUrl": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400",
+            "backgroundUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800",
+            "featured": false
+        },
+        {
+            "id": 55,
+            "name": "Premium Gold Box",
+            "description": "Premium box with high-value items and rare collectibles",
+            "price": "24.99",
+            "originalPrice": "24.99",
+            "rarity": "rare",
+            "imageUrl": "https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=400",
+            "backgroundUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800",
+            "featured": true
+        },
+        {
+            "id": 56,
+            "name": "Tech Gadget Box",
+            "description": "Latest tech gadgets and electronic accessories",
+            "price": "19.99",
+            "originalPrice": "19.99",
+            "rarity": "uncommon",
+            "imageUrl": "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400",
+            "backgroundUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800",
+            "featured": false
+        },
+        {
+            "id": 47,
+            "name": "Supreme Vault",
+            "description": "Exclusive streetwear drops from Supreme's most sought-after releases.",
+            "price": "124.99",
+            "originalPrice": "124.99",
+            "rarity": "mythical",
+            "imageUrl": "/api/cdn/images/1748957469932_supreme.webp",
+            "backgroundUrl": "",
+            "featured": true
+        },
+        {
+            "id": 42,
+            "name": "Gold finger",
+            "description": "Street-smart collection with urban essentials and rare finds.",
+            "price": "15000.00",
+            "originalPrice": "15000.00",
+            "rarity": "mythical",
+            "imageUrl": "/api/cdn/images/1748957620514_PP.webp",
+            "backgroundUrl": "",
+            "featured": true
+        },
+        {
+            "id": 57,
+            "name": "Luxury Diamond Box",
+            "description": "Ultra-rare luxury items and exclusive collectibles",
+            "price": "99.99",
+            "originalPrice": "99.99",
+            "rarity": "legendary",
+            "imageUrl": "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400",
+            "backgroundUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800",
+            "featured": true
+        },
+        {
+            "id": 58,
+            "name": "Gaming Box",
+            "description": "Gaming accessories and digital items for gamers",
+            "price": "14.99",
+            "originalPrice": "14.99",
+            "rarity": "uncommon",
+            "imageUrl": "https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?w=400",
+            "backgroundUrl": "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=800",
+            "featured": false
+        }
+    ],
+    "count": 16
+}

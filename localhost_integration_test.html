@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Riches - Localhost Integration Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .test-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .test-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .info-panel {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .info-panel h3 {
+            color: #ffd700;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .info-list {
+            list-style: none;
+        }
+        
+        .info-list li {
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .info-list li:before {
+            content: "▸";
+            position: absolute;
+            left: 0;
+            color: #ffd700;
+            font-weight: bold;
+        }
+        
+        .widget-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 20px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+        
+        .widget-status {
+            position: absolute;
+            top: -15px;
+            right: 20px;
+            background: #1e3c72;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 2px solid #ffd700;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .status-loading { color: #ff9500; }
+        .status-success { color: #00ff00; }
+        .status-error { color: #ff4444; }
+        
+        .widget-iframe {
+            width: 100%;
+            height: 800px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #000, #1a1a1a);
+        }
+        
+        .test-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .control-btn {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #1e3c72;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        .logs-container {
+            background: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+        }
+        
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .log-timestamp {
+            color: #888;
+            margin-right: 10px;
+        }
+        
+        .log-info { color: #4CAF50; }
+        .log-warn { color: #FF9800; }
+        .log-error { color: #F44336; }
+        
+        @media (max-width: 768px) {
+            .test-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .widget-iframe {
+                height: 600px;
+            }
+            
+            .test-header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <h1>Rolling Riches Widget Test</h1>
+        <p>Testing B2B iframe integration from localhost environment</p>
+    </div>
+
+    <div class="test-info">
+        <div class="info-panel">
+            <h3>Test Configuration</h3>
+            <ul class="info-list">
+                <li>Environment: localhost</li>
+                <li>Partner: rolling-riches</li>
+                <li>Widget Source: Replit Deployment</li>
+                <li>CORS: Enabled for all origins</li>
+                <li>Features: Full widget suite</li>
+                <li>Communication: PostMessage API</li>
+            </ul>
+        </div>
+        
+        <div class="info-panel">
+            <h3>Expected Functionality</h3>
+            <ul class="info-list">
+                <li>Mystery box opening interface</li>
+                <li>Live case battles system</li>
+                <li>User inventory management</li>
+                <li>Real-time leaderboards</li>
+                <li>Transaction history tracking</li>
+                <li>Statistics dashboard</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="test-controls">
+        <button class="control-btn" onclick="reloadWidget()">Reload Widget</button>
+        <button class="control-btn" onclick="testCommunication()">Test Communication</button>
+        <button class="control-btn" onclick="clearLogs()">Clear Logs</button>
+        <button class="control-btn" onclick="toggleFullscreen()">Toggle Fullscreen</button>
+    </div>
+
+    <div class="widget-container">
+        <div class="widget-status" id="widget-status">
+            <span class="status-loading">Loading...</span>
+        </div>
+        
+        <iframe 
+            src="https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/widget/iframe?partner=rolling-riches&test=localhost"
+            class="widget-iframe"
+            id="rolling-riches-widget"
+            onload="handleWidgetLoad()"
+            onerror="handleWidgetError()"
+            allow="fullscreen; payment; microphone; camera; clipboard-read; clipboard-write"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-presentation allow-downloads">
+            <div style="padding: 40px; text-align: center; background: #333; border-radius: 10px;">
+                <h3>Browser Compatibility Issue</h3>
+                <p>Your browser does not support iframe embedding. Please use a modern browser like Chrome, Firefox, or Safari.</p>
+            </div>
+        </iframe>
+    </div>
+
+    <div class="logs-container" id="logs-container">
+        <div class="log-entry log-info">
+            <span class="log-timestamp" id="init-timestamp"></span>
+            <span>Initializing widget integration test...</span>
+        </div>
+    </div>
+
+    <script>
+        let startTime = Date.now();
+        let messageId = 0;
+        
+        function log(message, type = 'info') {
+            const logsContainer = document.getElementById('logs-container');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.innerHTML = `
+                <span class="log-timestamp">${timestamp}</span>
+                <span>${message}</span>
+            `;
+            logsContainer.appendChild(logEntry);
+            logsContainer.scrollTop = logsContainer.scrollHeight;
+        }
+        
+        function updateStatus(message, type) {
+            const statusElement = document.getElementById('widget-status');
+            statusElement.innerHTML = `<span class="status-${type}">${message}</span>`;
+        }
+        
+        function handleWidgetLoad() {
+            const loadTime = Date.now() - startTime;
+            updateStatus(`Loaded (${loadTime}ms)`, 'success');
+            log(`Widget loaded successfully in ${loadTime}ms`, 'info');
+            
+            // Test initial communication
+            setTimeout(() => {
+                testCommunication();
+            }, 2000);
+        }
+        
+        function handleWidgetError() {
+            updateStatus('Load Failed', 'error');
+            log('Widget failed to load - checking CORS and network connectivity', 'error');
+            
+            // Attempt diagnostics
+            setTimeout(() => {
+                log('Attempting widget reload in 5 seconds...', 'warn');
+                setTimeout(reloadWidget, 5000);
+            }, 1000);
+        }
+        
+        function reloadWidget() {
+            log('Reloading widget...', 'info');
+            updateStatus('Reloading...', 'loading');
+            startTime = Date.now();
+            const widget = document.getElementById('rolling-riches-widget');
+            widget.src = widget.src;
+        }
+        
+        function testCommunication() {
+            const widget = document.getElementById('rolling-riches-widget');
+            const testMessage = {
+                type: 'integration_test',
+                id: ++messageId,
+                timestamp: Date.now(),
+                source: 'localhost_test',
+                partner: 'rolling-riches'
+            };
+            
+            log(`Sending test message: ${JSON.stringify(testMessage)}`, 'info');
+            
+            try {
+                widget.contentWindow.postMessage(testMessage, '*');
+                log('Test message sent successfully', 'info');
+            } catch (error) {
+                log(`Communication error: ${error.message}`, 'error');
+            }
+        }
+        
+        function clearLogs() {
+            const logsContainer = document.getElementById('logs-container');
+            logsContainer.innerHTML = '';
+            log('Logs cleared', 'info');
+        }
+        
+        function toggleFullscreen() {
+            const widget = document.getElementById('rolling-riches-widget');
+            if (widget.requestFullscreen) {
+                widget.requestFullscreen();
+                log('Entered fullscreen mode', 'info');
+            } else {
+                log('Fullscreen not supported', 'warn');
+            }
+        }
+        
+        // Listen for messages from widget
+        window.addEventListener('message', function(event) {
+            // Log all messages for debugging
+            log(`Received message from ${event.origin}: ${JSON.stringify(event.data)}`, 'info');
+            
+            // Handle specific widget events
+            if (event.data && event.data.type) {
+                switch(event.data.type) {
+                    case 'widget_ready':
+                        log('Widget reports ready state', 'info');
+                        updateStatus('Ready', 'success');
+                        break;
+                    case 'box_opened':
+                        log(`Box opened: ${event.data.boxName || 'Unknown'}`, 'info');
+                        break;
+                    case 'battle_joined':
+                        log(`Battle joined: ${event.data.battleId || 'Unknown'}`, 'info');
+                        break;
+                    case 'transaction_completed':
+                        log(`Transaction: ${event.data.amount || 'Unknown'} ${event.data.currency || 'USD'}`, 'info');
+                        break;
+                    case 'error':
+                        log(`Widget error: ${event.data.message}`, 'error');
+                        break;
+                }
+            }
+        });
+        
+        // Monitor widget health
+        let healthCheckInterval = setInterval(() => {
+            const widget = document.getElementById('rolling-riches-widget');
+            if (widget && widget.contentWindow) {
+                // Send ping to check responsiveness
+                try {
+                    widget.contentWindow.postMessage({
+                        type: 'health_check',
+                        timestamp: Date.now()
+                    }, '*');
+                } catch (error) {
+                    log('Health check failed - widget may be unresponsive', 'warn');
+                }
+            }
+        }, 30000); // Every 30 seconds
+        
+        // Network connectivity check
+        function checkConnectivity() {
+            fetch('https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/api/v1/boxes', { mode: 'no-cors' })
+                .then(() => {
+                    log('Network connectivity confirmed', 'info');
+                })
+                .catch(() => {
+                    log('Network connectivity issues detected', 'error');
+                });
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('init-timestamp').textContent = new Date().toLocaleTimeString();
+            log('Localhost integration test initialized', 'info');
+            log('Widget URL: https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/widget/iframe?partner=rolling-riches', 'info');
+            
+            checkConnectivity();
+        });
+        
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            clearInterval(healthCheckInterval);
+        });
+    </script>
+</body>
+</html>

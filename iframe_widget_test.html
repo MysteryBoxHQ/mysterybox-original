@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RollingDrop Widget Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .iframe-container {
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+        }
+        .test-info {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-info">
+            <h1>RollingDrop Widget Integration Test</h1>
+            <p>This page tests the iframe widget functionality for B2B partner integration.</p>
+            
+            <div id="status-messages">
+                <div class="status warning">Testing widget load...</div>
+            </div>
+            
+            <h3>Test Parameters:</h3>
+            <ul>
+                <li><strong>Partner ID:</strong> 12</li>
+                <li><strong>Widget URL:</strong> http://localhost:5000/widget/iframe?partner=12</li>
+                <li><strong>Expected Features:</strong> Tab navigation, mystery boxes, battle system, history, leaderboard</li>
+            </ul>
+        </div>
+        
+        <div class="iframe-container">
+            <iframe 
+                src="http://localhost:5000/widget/iframe?partner=12" 
+                id="widget-iframe"
+                onload="handleIframeLoad()"
+                onerror="handleIframeError()">
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        function handleIframeLoad() {
+            const statusDiv = document.getElementById('status-messages');
+            statusDiv.innerHTML = '<div class="status success">✓ Widget loaded successfully</div>';
+            
+            // Test data loading
+            setTimeout(() => {
+                testDataLoading();
+            }, 2000);
+        }
+        
+        function handleIframeError() {
+            const statusDiv = document.getElementById('status-messages');
+            statusDiv.innerHTML = '<div class="status error">✗ Widget failed to load</div>';
+        }
+        
+        function testDataLoading() {
+            fetch('http://localhost:5000/api/widget/data?partner=12')
+                .then(response => response.json())
+                .then(data => {
+                    const statusDiv = document.getElementById('status-messages');
+                    statusDiv.innerHTML += '<div class="status success">✓ Widget data API responsive</div>';
+                    console.log('Widget data:', data);
+                })
+                .catch(error => {
+                    const statusDiv = document.getElementById('status-messages');
+                    statusDiv.innerHTML += '<div class="status error">✗ Widget data API failed: ' + error.message + '</div>';
+                    console.error('Data loading error:', error);
+                });
+        }
+        
+        // Auto-refresh every 30 seconds to test stability
+        setInterval(() => {
+            const iframe = document.getElementById('widget-iframe');
+            const currentSrc = iframe.src;
+            iframe.src = '';
+            setTimeout(() => {
+                iframe.src = currentSrc;
+            }, 100);
+        }, 30000);
+    </script>
+</body>
+</html>

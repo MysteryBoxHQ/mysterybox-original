@@ -1,0 +1,44 @@
+box.price.toFixed is not a function
+box.price.toFixed is not a function
+The above error occurred in the <BattleCreationModal> component:
+
+    at BattleCreationModal (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/src/components/BattleCreationModal.tsx:27:39)
+    at div
+    at Battles (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/src/pages/battles.tsx:31:22)
+    at Route (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0f01fc67:323:16)
+    at Switch (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0f01fc67:379:17)
+    at main
+    at div
+    at Route (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0f01fc67:323:16)
+    at Switch (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0f01fc67:379:17)
+    at Router (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/src/App.tsx?v=gXrECKm8s-0rL893eXNKe:68:42)
+    at Provider (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=0f01fc67:38:15)
+    at TooltipProvider (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=0f01fc67:64:5)
+    at QueryClientProvider (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=0f01fc67:2805:3)
+    at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+
+at BattleCreationModal (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/src/components/BattleCreationModal.tsx:27:39)
+at div
+at Battles (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/src/pages/battles.tsx:31:22)
+at Route (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0f01fc67:323:16)
+at Switch (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0f01fc67:379:17)
+at main
+at div
+at Route (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0f01fc67:323:16)
+at Switch (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=0f01fc67:379:17)
+at Router (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/src/App.tsx?v=gXrECKm8s-0rL893eXNKe:68:42)
+at Provider (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=0f01fc67:38:15)
+at TooltipProvider (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=0f01fc67:64:5)
+at QueryClientProvider (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=0f01fc67:2805:3)
+at App
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+at t.value (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
+box.price.toFixed is not a function

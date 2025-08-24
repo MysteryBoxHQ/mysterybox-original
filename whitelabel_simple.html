@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RollingDrop - Whitelabel Platform</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: #94a3b8;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .welcome {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .welcome h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #3b82f6, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .boxes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .box-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .box-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .box-image {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .box-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+        }
+
+        .box-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f59e0b;
+            margin-bottom: 1rem;
+        }
+
+        .open-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .open-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .open-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: #94a3b8;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show { transform: translateX(0); }
+        .notification.success { background: #22c55e; }
+        .notification.error { background: #ef4444; }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .close-btn {
+            background: #374151;
+            border: none;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">RollingDrop</div>
+        <div class="user-info">
+            <span>💰 <span id="userCoins">0</span> Coins</span>
+            <span>⭐ Level <span id="userLevel">1</span></span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="welcome">
+            <h1>Mystery Boxes</h1>
+            <p>Open boxes to discover amazing rewards</p>
+        </div>
+
+        <div id="boxesContainer">
+            <div class="loading">Loading boxes...</div>
+        </div>
+    </div>
+
+    <div id="rewardModal" class="modal">
+        <div class="modal-content">
+            <div class="item-image">🎁</div>
+            <h3 id="itemName">Amazing Item</h3>
+            <p id="itemValue">$0</p>
+            <button class="close-btn" onclick="closeModal()">Continue</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        async function checkAuthentication() {
+            try {
+                const response = await fetch('/api/whitelabel/user');
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.user;
+                    updateUserDisplay();
+                    return true;
+                } else {
+                    window.location.href = '/whitelabel_login_demo.html';
+                    return false;
+                }
+            } catch (error) {
+                window.location.href = '/whitelabel_login_demo.html';
+                return false;
+            }
+        }
+
+        function updateUserDisplay() {
+            if (currentUser) {
+                document.getElementById('userCoins').textContent = currentUser.goldCoins || 0;
+                document.getElementById('userLevel').textContent = currentUser.level || 1;
+            }
+        }
+
+        async function loadBoxes() {
+            try {
+                const response = await fetch('/api/whitelabel/boxes');
+                if (response.ok) {
+                    const data = await response.json();
+                    displayBoxes(data.boxes);
+                } else {
+                    showNotification('Failed to load boxes', 'error');
+                }
+            } catch (error) {
+                showNotification('Error loading boxes', 'error');
+            }
+        }
+
+        function displayBoxes(boxes) {
+            const container = document.getElementById('boxesContainer');
+            
+            if (!boxes || boxes.length === 0) {
+                container.innerHTML = '<div class="loading">No boxes available</div>';
+                return;
+            }
+
+            const grid = document.createElement('div');
+            grid.className = 'boxes-grid';
+
+            boxes.forEach(box => {
+                const boxCard = document.createElement('div');
+                boxCard.className = 'box-card';
+                boxCard.innerHTML = `
+                    <div class="box-image">📦</div>
+                    <div class="box-title">${box.name}</div>
+                    <div class="box-price">$${box.price}</div>
+                    <button class="open-btn" onclick="openBox(${box.id})" id="btn-${box.id}">
+                        Open Box
+                    </button>
+                `;
+                grid.appendChild(boxCard);
+            });
+
+            container.innerHTML = '';
+            container.appendChild(grid);
+        }
+
+        async function openBox(boxId) {
+            const btn = document.getElementById(`btn-${boxId}`);
+            btn.disabled = true;
+            btn.textContent = 'Opening...';
+
+            try {
+                const response = await fetch('/api/whitelabel/open-box', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ boxId })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    showReward(data.item);
+                    currentUser.goldCoins = data.newBalance;
+                    updateUserDisplay();
+                } else {
+                    showNotification(data.error || 'Failed to open box', 'error');
+                }
+            } catch (error) {
+                showNotification('Error opening box', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Open Box';
+            }
+        }
+
+        function showReward(item) {
+            document.getElementById('itemName').textContent = item.name;
+            document.getElementById('itemValue').textContent = `$${item.value}`;
+            document.getElementById('rewardModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('rewardModal').style.display = 'none';
+        }
+
+        // Initialize
+        window.addEventListener('load', async () => {
+            const authenticated = await checkAuthentication();
+            if (authenticated) {
+                await loadBoxes();
+            }
+        });
+    </script>
+</body>
+</html>

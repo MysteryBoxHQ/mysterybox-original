@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>External Iframe Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        iframe {
+            width: 100%;
+            height: 800px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>External Iframe Embedding Test</h1>
+        <p>Testing iframe widget from external domain simulation</p>
+        
+        <div id="status" class="status">Loading iframe...</div>
+        
+        <iframe 
+            id="widget-iframe"
+            src="https://0d2da366-1f84-4d2a-a5a9-b4efb6f2e012-00-1d28ji46vsr2s.picard.replit.dev/iframe_widget.html?partner=rolling-riches"
+            title="Mystery Boxes Widget"
+            sandbox="allow-scripts allow-same-origin allow-forms">
+        </iframe>
+    </div>
+
+    <script>
+        const iframe = document.getElementById('widget-iframe');
+        const status = document.getElementById('status');
+        
+        iframe.onload = function() {
+            status.textContent = 'Iframe loaded successfully!';
+            status.className = 'status success';
+        };
+        
+        iframe.onerror = function() {
+            status.textContent = 'Failed to load iframe - CSP or X-Frame-Options blocking';
+            status.className = 'status error';
+        };
+        
+        // Timeout check
+        setTimeout(() => {
+            if (status.textContent === 'Loading iframe...') {
+                status.textContent = 'Iframe load timeout - likely blocked by security headers';
+                status.className = 'status error';
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

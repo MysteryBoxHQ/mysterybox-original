@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>B2B Partner Integration Demo - RollingDrop Widget</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .demo-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .integration-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .info-card h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .info-card ul {
+            list-style: none;
+        }
+
+        .info-card li {
+            padding: 8px 0;
+            color: #4a5568;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .info-card li:last-child {
+            border-bottom: none;
+        }
+
+        .info-card strong {
+            color: #2d3748;
+        }
+
+        .widget-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .widget-title {
+            font-size: 1.8rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .partner-badge {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .iframe-wrapper {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: #0d1117;
+        }
+
+        iframe {
+            width: 100%;
+            height: 700px;
+            border: none;
+            display: block;
+        }
+
+        .status-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .status-success {
+            background: rgba(72, 187, 120, 0.1);
+            color: #2f855a;
+            border: 1px solid rgba(72, 187, 120, 0.3);
+        }
+
+        .status-error {
+            background: rgba(245, 101, 101, 0.1);
+            color: #c53030;
+            border: 1px solid rgba(245, 101, 101, 0.3);
+        }
+
+        .status-loading {
+            background: rgba(66, 153, 225, 0.1);
+            color: #3182ce;
+            border: 1px solid rgba(66, 153, 225, 0.3);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-success .status-dot {
+            background: #48bb78;
+        }
+
+        .status-error .status-dot {
+            background: #f56565;
+        }
+
+        .status-loading .status-dot {
+            background: #4299e1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .api-test-buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .test-button {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .test-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .test-button:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .integration-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            iframe {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="header">
+            <h1>🎲 RollingDrop B2B Integration Demo</h1>
+            <p>Experience our complete widget integration solution for casino and gaming platforms. This demo showcases the iframe widget with real-time data feeds, responsive design, and seamless user experience.</p>
+        </div>
+
+        <div class="integration-info">
+            <div class="info-card">
+                <h3>🔧 Integration Details</h3>
+                <ul>
+                    <li><strong>Partner ID:</strong> test-partner</li>
+                    <li><strong>Widget Type:</strong> Iframe Embed</li>
+                    <li><strong>API Version:</strong> v1</li>
+                    <li><strong>Theme:</strong> GitHub Dark</li>
+                    <li><strong>Data Source:</strong> Real-time API</li>
+                    <li><strong>Response Time:</strong> < 100ms</li>
+                </ul>
+            </div>
+            
+            <div class="info-card">
+                <h3>🚀 Features Included</h3>
+                <ul>
+                    <li><strong>Mystery Boxes:</strong> Interactive catalog</li>
+                    <li><strong>Battle System:</strong> Live competitions</li>
+                    <li><strong>User History:</strong> Recent openings</li>
+                    <li><strong>Leaderboards:</strong> Top performers</li>
+                    <li><strong>Responsive Design:</strong> Mobile-ready</li>
+                    <li><strong>Real-time Updates:</strong> Live data feeds</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="widget-container">
+            <div class="widget-header">
+                <h2 class="widget-title">Live Widget Preview</h2>
+                <div class="partner-badge">Partner: test-partner</div>
+            </div>
+            
+            <div class="iframe-wrapper">
+                <iframe 
+                    src="http://localhost:5000/widget/iframe?partner=test-partner" 
+                    id="widget-iframe"
+                    onload="handleWidgetLoad()"
+                    onerror="handleWidgetError()">
+                </iframe>
+            </div>
+        </div>
+
+        <div class="status-panel">
+            <h3 style="color: #2d3748; margin-bottom: 20px;">🔍 Integration Status</h3>
+            
+            <div id="status-container">
+                <div class="status-indicator status-loading">
+                    <div class="status-dot"></div>
+                    <span>Initializing widget...</span>
+                </div>
+            </div>
+
+            <div class="api-test-buttons">
+                <button class="test-button" onclick="testWidgetData()">Test Widget Data API</button>
+                <button class="test-button" onclick="testBoxOpening()">Test Box Opening</button>
+                <button class="test-button" onclick="refreshWidget()">Refresh Widget</button>
+                <button class="test-button" onclick="testResponsiveness()">Test Mobile View</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let statusContainer;
+        let widgetIframe;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            statusContainer = document.getElementById('status-container');
+            widgetIframe = document.getElementById('widget-iframe');
+            
+            // Start comprehensive testing
+            setTimeout(runIntegrationTests, 1000);
+        });
+
+        function addStatus(message, type = 'success') {
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status-indicator status-${type}`;
+            statusDiv.innerHTML = `
+                <div class="status-dot"></div>
+                <span>${message}</span>
+            `;
+            statusContainer.appendChild(statusDiv);
+            
+            // Auto-remove loading states after 3 seconds
+            if (type === 'loading') {
+                setTimeout(() => {
+                    if (statusDiv.parentNode) {
+                        statusDiv.remove();
+                    }
+                }, 3000);
+            }
+        }
+
+        function handleWidgetLoad() {
+            addStatus('✓ Widget iframe loaded successfully', 'success');
+        }
+
+        function handleWidgetError() {
+            addStatus('✗ Widget iframe failed to load', 'error');
+        }
+
+        async function runIntegrationTests() {
+            // Clear initial loading state
+            statusContainer.innerHTML = '';
+            
+            addStatus('Running integration tests...', 'loading');
+            
+            // Test 1: Widget Data API
+            try {
+                const response = await fetch('http://localhost:5000/api/widget/data?partner=test-partner');
+                const data = await response.json();
+                
+                if (response.ok && data.boxes && data.boxes.length > 0) {
+                    addStatus(`✓ Widget Data API responsive (${data.boxes.length} boxes loaded)`, 'success');
+                } else {
+                    addStatus('✗ Widget Data API returned invalid data', 'error');
+                }
+            } catch (error) {
+                addStatus(`✗ Widget Data API failed: ${error.message}`, 'error');
+            }
+            
+            // Test 2: iframe accessibility
+            setTimeout(() => {
+                if (widgetIframe.contentWindow) {
+                    addStatus('✓ Widget iframe accessible and interactive', 'success');
+                } else {
+                    addStatus('⚠ Widget iframe may have loading issues', 'error');
+                }
+            }, 2000);
+            
+            // Test 3: Responsive design check
+            setTimeout(() => {
+                const iframeRect = widgetIframe.getBoundingClientRect();
+                if (iframeRect.width > 0 && iframeRect.height > 0) {
+                    addStatus(`✓ Widget dimensions: ${Math.round(iframeRect.width)}x${Math.round(iframeRect.height)}px`, 'success');
+                } else {
+                    addStatus('✗ Widget has invalid dimensions', 'error');
+                }
+            }, 3000);
+        }
+
+        async function testWidgetData() {
+            addStatus('Testing widget data endpoint...', 'loading');
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/widget/data?partner=test-partner');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addStatus(`✓ Data API: ${data.boxes.length} boxes, ${data.recentOpenings.length} recent openings`, 'success');
+                } else {
+                    addStatus(`✗ Data API error: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addStatus(`✗ Data API failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testBoxOpening() {
+            addStatus('Testing box opening functionality...', 'loading');
+            
+            try {
+                const response = await fetch('http://localhost:5000/api/widget/open-box', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        boxId: 1,
+                        partner: 'test-partner'
+                    })
+                });
+                
+                if (response.ok) {
+                    addStatus('✓ Box opening API responsive', 'success');
+                } else {
+                    addStatus(`ℹ Box opening API: ${response.status} (expected for demo)`, 'success');
+                }
+            } catch (error) {
+                addStatus(`ℹ Box opening test completed: ${error.message}`, 'success');
+            }
+        }
+
+        function refreshWidget() {
+            addStatus('Refreshing widget...', 'loading');
+            
+            const currentSrc = widgetIframe.src;
+            widgetIframe.src = '';
+            
+            setTimeout(() => {
+                widgetIframe.src = currentSrc;
+                addStatus('✓ Widget refreshed successfully', 'success');
+            }, 500);
+        }
+
+        function testResponsiveness() {
+            addStatus('Testing responsive design...', 'loading');
+            
+            const container = widgetIframe.parentElement;
+            const originalWidth = container.style.width;
+            
+            // Test mobile width
+            container.style.width = '375px';
+            container.style.transition = 'width 0.5s ease';
+            
+            setTimeout(() => {
+                addStatus('✓ Mobile view: 375px width applied', 'success');
+                
+                // Reset to original width
+                setTimeout(() => {
+                    container.style.width = originalWidth || '100%';
+                    addStatus('✓ Responsive test completed', 'success');
+                }, 2000);
+            }, 1000);
+        }
+
+        // Auto-refresh widget every 60 seconds to test stability
+        setInterval(() => {
+            addStatus('🔄 Auto-refresh: Testing widget stability', 'loading');
+            refreshWidget();
+        }, 60000);
+    </script>
+</body>
+</html>

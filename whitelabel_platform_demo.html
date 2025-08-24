@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RollingDrop Demo - Whitelabel Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #3b82f6, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-stats {
+            display: flex;
+            gap: 1rem;
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .stat {
+            background: rgba(59, 130, 246, 0.1);
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .logout-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #e2e8f0, #94a3b8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .welcome-section p {
+            color: #94a3b8;
+            font-size: 1.125rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .boxes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .box-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .box-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
+        }
+
+        .box-card.featured {
+            border-color: rgba(245, 158, 11, 0.4);
+            background: rgba(245, 158, 11, 0.05);
+        }
+
+        .box-card.featured::before {
+            content: "FEATURED";
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .box-image {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #1e293b, #334155);
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #64748b;
+        }
+
+        .box-name {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+        }
+
+        .box-description {
+            color: #94a3b8;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            margin-bottom: 1rem;
+        }
+
+        .box-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .box-price {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #22c55e;
+        }
+
+        .rarity-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .rarity-common {
+            background: rgba(156, 163, 175, 0.2);
+            color: #9ca3af;
+            border: 1px solid rgba(156, 163, 175, 0.3);
+        }
+
+        .rarity-uncommon {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .rarity-rare {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .rarity-epic {
+            background: rgba(147, 51, 234, 0.2);
+            color: #9333ea;
+            border: 1px solid rgba(147, 51, 234, 0.3);
+        }
+
+        .rarity-legendary {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .open-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 1rem;
+            width: 100%;
+        }
+
+        .open-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
+        }
+
+        .features-section {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #3b82f6;
+        }
+
+        .feature h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #e2e8f0;
+        }
+
+        .feature p {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+
+        .loading {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #64748b;
+            border-top: 2px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #22c55e;
+        }
+
+        .notification.error {
+            background: #ef4444;
+        }
+
+        .notification.info {
+            background: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">RollingDrop Demo</div>
+        <div class="user-info">
+            <div class="user-stats">
+                <div class="stat">
+                    <span>💰 <span id="userCoins">0</span> Coins</span>
+                </div>
+                <div class="stat">
+                    <span>⭐ Level <span id="userLevel">1</span></span>
+                </div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h1>Welcome to Your Whitelabel Platform</h1>
+            <p>Discover amazing rewards in our exclusive mystery boxes. Each box contains unique items with different rarities and values.</p>
+        </div>
+
+        <div id="boxesContainer">
+            <div class="loading" id="mainLoading" style="display: block;"></div>
+        </div>
+
+        <div class="features-section">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: #e2e8f0;">Whitelabel Platform Features</h2>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">🎁</div>
+                    <h3>Custom Mystery Boxes</h3>
+                    <p>Unique boxes tailored to your whitelabel brand with custom pricing and rewards</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔐</div>
+                    <h3>Secure Authentication</h3>
+                    <p>Isolated user system ensuring data privacy between different whitelabel instances</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎨</div>
+                    <h3>Brand Customization</h3>
+                    <p>Full control over colors, logos, and branding to match your platform identity</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <h3>Analytics & Insights</h3>
+                    <p>Detailed analytics on user engagement, box openings, and revenue metrics</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+        }
+
+        async function checkAuthentication() {
+            try {
+                const response = await fetch('/api/whitelabel/user');
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.user;
+                    updateUserDisplay();
+                    return true;
+                } else {
+                    // Redirect to login if not authenticated
+                    window.location.href = '/whitelabel/login';
+                    return false;
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                window.location.href = '/whitelabel/login';
+                return false;
+            }
+        }
+
+        function updateUserDisplay() {
+            if (currentUser) {
+                document.getElementById('userCoins').textContent = currentUser.goldCoins || 0;
+                document.getElementById('userLevel').textContent = currentUser.level || 1;
+            }
+        }
+
+        async function loadWhitelabelBoxes() {
+            try {
+                const response = await fetch('/api/whitelabel/boxes?whitelabel=rollingdrop-demo');
+                const data = await response.json();
+                
+                if (response.ok && data.boxes) {
+                    displayBoxes(data.boxes);
+                } else {
+                    showNotification('Failed to load boxes', 'error');
+                    // Show demo boxes as fallback
+                    displayDemoBoxes();
+                }
+            } catch (error) {
+                console.error('Failed to load boxes:', error);
+                showNotification('Network error loading boxes', 'error');
+                displayDemoBoxes();
+            }
+        }
+
+        function displayBoxes(boxes) {
+            const container = document.getElementById('boxesContainer');
+            const mainLoading = document.getElementById('mainLoading');
+            
+            if (boxes.length === 0) {
+                displayDemoBoxes();
+                return;
+            }
+            
+            mainLoading.style.display = 'none';
+            
+            const boxesGrid = document.createElement('div');
+            boxesGrid.className = 'boxes-grid';
+            
+            boxes.forEach(box => {
+                const boxCard = createBoxCard(box);
+                boxesGrid.appendChild(boxCard);
+            });
+            
+            container.innerHTML = '';
+            container.appendChild(boxesGrid);
+        }
+
+        function displayDemoBoxes() {
+            const demoBoxes = [
+                {
+                    id: 1,
+                    name: 'Starter Mystery Box',
+                    description: 'Perfect for beginners! Contains common to rare items.',
+                    price: '9.99',
+                    rarity: 'common',
+                    featured: false
+                },
+                {
+                    id: 2,
+                    name: 'Premium Gold Box',
+                    description: 'High-value items guaranteed! Rare to legendary drops.',
+                    price: '24.99',
+                    rarity: 'rare',
+                    featured: true
+                },
+                {
+                    id: 3,
+                    name: 'Tech Gadget Box',
+                    description: 'Latest tech gadgets and digital collectibles.',
+                    price: '19.99',
+                    rarity: 'uncommon',
+                    featured: false
+                },
+                {
+                    id: 4,
+                    name: 'Luxury Designer Box',
+                    description: 'Exclusive designer items and luxury collectibles.',
+                    price: '49.99',
+                    rarity: 'epic',
+                    featured: true
+                }
+            ];
+            
+            displayBoxes(demoBoxes);
+        }
+
+        function createBoxCard(box) {
+            const card = document.createElement('div');
+            card.className = `box-card ${box.featured ? 'featured' : ''}`;
+            
+            card.innerHTML = `
+                <div class="box-image">📦</div>
+                <div class="box-name">${box.customName || box.name}</div>
+                <div class="box-description">${box.customDescription || box.description}</div>
+                <div class="box-footer">
+                    <div class="box-price">$${box.customPrice || box.price}</div>
+                    <div class="rarity-badge rarity-${box.rarity}">${box.rarity}</div>
+                </div>
+                <button class="open-btn" onclick="openBox(${box.id}, '${box.name}')">
+                    Open Box
+                </button>
+            `;
+            
+            return card;
+        }
+
+        async function openBox(boxId, boxName) {
+            showNotification(`Opening ${boxName}...`, 'info');
+            
+            try {
+                const response = await fetch('/api/whitelabel/open-box', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ boxId })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showNotification(`Congratulations! You got: ${data.item?.name || 'Mystery Item'}`, 'success');
+                    
+                    // Update user coins if provided
+                    if (data.user && data.user.goldCoins !== undefined) {
+                        currentUser.goldCoins = data.user.goldCoins;
+                        updateUserDisplay();
+                    }
+                } else {
+                    showNotification(data.error || 'Box opening failed', 'error');
+                }
+            } catch (error) {
+                console.error('Box opening error:', error);
+                showNotification('Network error during box opening', 'error');
+            }
+        }
+
+        async function logout() {
+            try {
+                const response = await fetch('/api/whitelabel/logout', {
+                    method: 'POST'
+                });
+                
+                if (response.ok) {
+                    localStorage.removeItem('whitelabelUser');
+                    showNotification('Logged out successfully', 'success');
+                    setTimeout(() => {
+                        window.location.href = '/whitelabel/login';
+                    }, 1000);
+                } else {
+                    showNotification('Logout failed', 'error');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                showNotification('Logout failed', 'error');
+            }
+        }
+
+        // Initialize the platform
+        async function initializePlatform() {
+            const isAuthenticated = await checkAuthentication();
+            if (isAuthenticated) {
+                await loadWhitelabelBoxes();
+            }
+        }
+
+        // Start the application
+        initializePlatform();
+    </script>
+</body>
+</html>

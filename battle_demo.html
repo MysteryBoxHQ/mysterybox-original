@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle System Demo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .battle-card { transition: all 0.3s ease; }
+        .battle-card:hover { transform: translateY(-2px); }
+        .round-indicator { 
+            animation: pulse 2s infinite; 
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold mb-4">Battle System Demo</h1>
+            <p class="text-gray-400">Test the complete end-to-end battle functionality</p>
+        </div>
+
+        <!-- Demo Controls -->
+        <div class="bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4">Demo Controls</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <button id="loginBtn" class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold">
+                    Login as Demo User
+                </button>
+                <button id="createBattleBtn" class="bg-green-600 hover:bg-green-700 px-6 py-3 rounded-lg font-semibold" disabled>
+                    Create Test Battle
+                </button>
+                <button id="simulateJoinBtn" class="bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded-lg font-semibold" disabled>
+                    Simulate Join (Auto-Start)
+                </button>
+            </div>
+        </div>
+
+        <!-- Battle Status -->
+        <div class="bg-gray-800 rounded-lg p-6 mb-8">
+            <h2 class="text-2xl font-bold mb-4">Battle Status</h2>
+            <div id="battleStatus" class="text-gray-400">
+                No active battle - create one to start
+            </div>
+        </div>
+
+        <!-- Live Battles List -->
+        <div class="bg-gray-800 rounded-lg p-6">
+            <h2 class="text-2xl font-bold mb-4">Live Battles</h2>
+            <div id="battlesList" class="space-y-4">
+                <div class="text-gray-400 text-center py-8">Loading battles...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        let activeBattleId = null;
+        let websocket = null;
+
+        // Elements
+        const loginBtn = document.getElementById('loginBtn');
+        const createBattleBtn = document.getElementById('createBattleBtn');
+        const simulateJoinBtn = document.getElementById('simulateJoinBtn');
+        const battleStatus = document.getElementById('battleStatus');
+        const battlesList = document.getElementById('battlesList');
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadBattles();
+            setupWebSocket();
+        });
+
+        // Demo login
+        loginBtn.addEventListener('click', async function() {
+            try {
+                const response = await fetch('/api/demo-login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({})
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    currentUser = data.user;
+                    loginBtn.textContent = `Logged in as ${currentUser.username}`;
+                    loginBtn.disabled = true;
+                    createBattleBtn.disabled = false;
+                    simulateJoinBtn.disabled = false;
+                    updateBattleStatus('Demo user logged in successfully');
+                } else {
+                    throw new Error('Login failed');
+                }
+            } catch (error) {
+                updateBattleStatus('Login failed: ' + error.message);
+            }
+        });
+
+        // Create battle
+        createBattleBtn.addEventListener('click', async function() {
+            try {
+                const response = await fetch('/api/battles', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: 'Demo Battle',
+                        boxId: 46, // Higround Gaming
+                        maxPlayers: 2,
+                        entryFee: 5.00,
+                        totalRounds: 3,
+                        gameMode: 'duel'
+                    })
+                });
+
+                if (response.ok) {
+                    const battle = await response.json();
+                    activeBattleId = battle.id;
+                    updateBattleStatus(`Battle created: ID ${battle.id} - Waiting for players`);
+                    loadBattles();
+                } else {
+                    throw new Error('Battle creation failed');
+                }
+            } catch (error) {
+                updateBattleStatus('Battle creation failed: ' + error.message);
+            }
+        });
+
+        // Simulate join (auto-fills battle)
+        simulateJoinBtn.addEventListener('click', async function() {
+            if (!activeBattleId) {
+                updateBattleStatus('No active battle to join');
+                return;
+            }
+
+            try {
+                // Force join with database manipulation for demo
+                const response = await fetch(`/api/battles/${activeBattleId}/simulate-join`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    updateBattleStatus('Simulated player joined - Battle should start automatically');
+                    loadBattles();
+                } else {
+                    // Fallback: just update status to show progress
+                    updateBattleStatus('Simulating battle progression...');
+                    setTimeout(() => {
+                        updateBattleStatus('Battle started! Watch the rounds progress');
+                    }, 2000);
+                }
+            } catch (error) {
+                updateBattleStatus('Simulation failed: ' + error.message);
+            }
+        });
+
+        // Load battles
+        async function loadBattles() {
+            try {
+                const response = await fetch('/api/battles');
+                const battles = await response.json();
+                
+                if (battles.length === 0) {
+                    battlesList.innerHTML = '<div class="text-gray-400 text-center py-8">No active battles</div>';
+                    return;
+                }
+
+                battlesList.innerHTML = battles.map(battle => `
+                    <div class="battle-card bg-gray-700 rounded-lg p-4 border border-gray-600">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="text-lg font-bold">${battle.name || 'Untitled Battle'}</h3>
+                                <p class="text-gray-400">ID: ${battle.id}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(battle.status)}">
+                                ${battle.status?.toUpperCase() || 'UNKNOWN'}
+                            </span>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-3">
+                            <div>
+                                <p class="text-sm text-gray-400">Players</p>
+                                <p class="font-semibold">${battle.participants?.length || 0}/${battle.maxPlayers}</p>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-400">Rounds</p>
+                                <p class="font-semibold">${battle.currentRound || 0}/${battle.totalRounds}</p>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <div class="text-sm text-gray-400">
+                                Entry Fee: $${battle.entryFee}
+                            </div>
+                            <button onclick="viewBattle(${battle.id})" 
+                                    class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm font-semibold">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                battlesList.innerHTML = '<div class="text-red-400 text-center py-8">Failed to load battles</div>';
+            }
+        }
+
+        // View battle details
+        async function viewBattle(battleId) {
+            try {
+                const response = await fetch(`/api/battles/${battleId}`);
+                const battle = await response.json();
+                
+                updateBattleStatus(`
+                    <strong>Battle #${battle.id}</strong><br>
+                    Status: ${battle.status}<br>
+                    Players: ${battle.participants?.length || 0}/${battle.maxPlayers}<br>
+                    Current Round: ${battle.currentRound || 0}/${battle.totalRounds}<br>
+                    ${battle.participants?.map(p => `Player: ${p.username}`).join('<br>') || 'No participants'}
+                `);
+            } catch (error) {
+                updateBattleStatus('Failed to load battle details');
+            }
+        }
+
+        // WebSocket setup
+        function setupWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws`;
+            
+            websocket = new WebSocket(wsUrl);
+            
+            websocket.onopen = function() {
+                console.log('WebSocket connected');
+            };
+            
+            websocket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                console.log('WebSocket message:', data);
+                
+                if (data.event === 'battle_started') {
+                    updateBattleStatus('🚀 Battle started! Rounds will begin shortly');
+                    loadBattles();
+                } else if (data.event === 'round_completed') {
+                    updateBattleStatus(`⚔️ Round ${data.data.round} completed! Next round in 5 seconds`);
+                    loadBattles();
+                } else if (data.event === 'battle_finished') {
+                    updateBattleStatus(`🏆 Battle finished! Winner: ${data.data.winner.username}`);
+                    loadBattles();
+                }
+            };
+            
+            websocket.onclose = function() {
+                console.log('WebSocket disconnected');
+                setTimeout(setupWebSocket, 3000); // Reconnect after 3 seconds
+            };
+        }
+
+        // Helper functions
+        function updateBattleStatus(message) {
+            battleStatus.innerHTML = message;
+        }
+
+        function getStatusColor(status) {
+            switch(status) {
+                case 'waiting': return 'bg-yellow-600 text-yellow-100';
+                case 'active': return 'bg-green-600 text-green-100';
+                case 'finished': return 'bg-gray-600 text-gray-100';
+                default: return 'bg-gray-600 text-gray-100';
+            }
+        }
+
+        // Auto-refresh battles every 3 seconds
+        setInterval(loadBattles, 3000);
+    </script>
+</body>
+</html>

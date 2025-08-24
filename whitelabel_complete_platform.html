@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RollingDrop - Complete Whitelabel Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.75rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .balance {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .nav-tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+        }
+
+        .nav-tab:hover {
+            color: #e2e8f0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .notification {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { background: #10b981; }
+        .notification.error { background: #ef4444; }
+        .notification.info { background: #3b82f6; }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 2rem;
+            height: 2rem;
+            border: 3px solid #374151;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 3rem 2rem;
+            background: rgba(59, 130, 246, 0.05);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+        }
+
+        .platform-redirect {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .redirect-btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .redirect-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-description {
+            color: #94a3b8;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">RollingDrop Platform</div>
+            <div class="user-info">
+                <div class="balance" id="userBalance">$0.00</div>
+                <span id="username">Welcome!</span>
+            </div>
+        </header>
+
+        <div class="welcome-message">
+            <h1>Welcome to Your Complete Gaming Platform</h1>
+            <p>Experience the full RollingDrop platform with all features including inventory management, battles, marketplace, promotions, statistics, and more.</p>
+        </div>
+
+        <div class="platform-redirect">
+            <h2>Access Your Full Platform</h2>
+            <p>Click below to access your complete platform with all advanced features:</p>
+            <br>
+            <a href="/?mode=whitelabel" class="redirect-btn">Launch Full Platform</a>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📦</div>
+                <div class="feature-title">Mystery Boxes</div>
+                <div class="feature-description">Open premium mystery boxes with stunning animations and rarity effects</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎒</div>
+                <div class="feature-title">Inventory</div>
+                <div class="feature-description">Manage your items with advanced filtering and sorting options</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚔️</div>
+                <div class="feature-title">Battles</div>
+                <div class="feature-description">Compete against other players in box opening battles</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🏪</div>
+                <div class="feature-title">Marketplace</div>
+                <div class="feature-description">Buy and sell items with other players</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🎁</div>
+                <div class="feature-title">Promotions</div>
+                <div class="feature-description">Daily rewards, referral bonuses, and special promotions</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-title">Vault</div>
+                <div class="feature-description">Secure storage for your most valuable items</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Statistics</div>
+                <div class="feature-description">Track your performance and gaming statistics</div>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">💳</div>
+                <div class="feature-title">Payments</div>
+                <div class="feature-description">Secure USD deposits and withdrawals via Stripe</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Check if user is logged in
+        const whitelabelToken = localStorage.getItem('whitelabel_token');
+        const whitelabelUser = localStorage.getItem('whitelabel_user');
+
+        if (!whitelabelToken) {
+            // Redirect to login if not authenticated
+            window.location.href = '/whitelabel/login';
+        } else {
+            // Display user info
+            try {
+                const user = JSON.parse(whitelabelUser);
+                document.getElementById('username').textContent = user.username || 'User';
+                document.getElementById('userBalance').textContent = `$${parseFloat(user.usdBalance || 0).toFixed(2)}`;
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Auto-redirect to full platform after 3 seconds
+        setTimeout(() => {
+            if (whitelabelToken) {
+                showNotification('Redirecting to full platform...', 'info');
+                setTimeout(() => {
+                    window.location.href = '/?mode=whitelabel';
+                }, 1500);
+            }
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Box Assignment & Featured Status Sync Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .admin-panel, .widget-panel {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .panel-header {
+            background: #333;
+            color: white;
+            padding: 15px;
+            font-weight: bold;
+        }
+        iframe {
+            width: 100%;
+            border: none;
+        }
+        .admin-iframe {
+            height: 800px;
+        }
+        .widget-iframe {
+            height: 600px;
+        }
+        .test-info {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            grid-column: 1 / -1;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .refresh-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+        .refresh-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-info">
+        <h1>Box Assignment & Featured Status Synchronization Test</h1>
+        <p>This test verifies that changes made in the admin panel are immediately reflected in the iframe widget.</p>
+        
+        <div id="status-messages">
+            <div class="status warning">Test initialized - Loading admin and widget panels...</div>
+        </div>
+        
+        <h3>Test Instructions:</h3>
+        <ol>
+            <li>Use the admin panel on the left to toggle box assignments and featured status</li>
+            <li>Check if changes are immediately reflected in the widget iframe on the right</li>
+            <li>Use the refresh buttons below to reload either panel if needed</li>
+        </ol>
+        
+        <div>
+            <button class="refresh-btn" onclick="refreshAdmin()">Refresh Admin Panel</button>
+            <button class="refresh-btn" onclick="refreshWidget()">Refresh Widget</button>
+            <button class="refresh-btn" onclick="testApiSync()">Test API Sync</button>
+        </div>
+    </div>
+    
+    <div class="test-container">
+        <div class="admin-panel">
+            <div class="panel-header">Admin Panel - Demo Casino Partner Configuration</div>
+            <iframe 
+                src="http://localhost:5000/#/admin/business-models" 
+                id="admin-iframe"
+                class="admin-iframe"
+                onload="handleAdminLoad()">
+            </iframe>
+        </div>
+        
+        <div class="widget-panel">
+            <div class="panel-header">Widget Iframe - Demo Casino Partner</div>
+            <iframe 
+                src="http://localhost:5000/widget/iframe?partner=demo-casino" 
+                id="widget-iframe"
+                class="widget-iframe"
+                onload="handleWidgetLoad()">
+            </iframe>
+        </div>
+    </div>
+
+    <script>
+        let adminLoaded = false;
+        let widgetLoaded = false;
+        
+        function handleAdminLoad() {
+            adminLoaded = true;
+            updateStatus();
+        }
+        
+        function handleWidgetLoad() {
+            widgetLoaded = true;
+            updateStatus();
+            
+            // Test widget data loading
+            setTimeout(() => {
+                testApiSync();
+            }, 2000);
+        }
+        
+        function updateStatus() {
+            const statusDiv = document.getElementById('status-messages');
+            let messages = [];
+            
+            if (adminLoaded) {
+                messages.push('<div class="status success">✓ Admin panel loaded successfully</div>');
+            }
+            
+            if (widgetLoaded) {
+                messages.push('<div class="status success">✓ Widget iframe loaded successfully</div>');
+            }
+            
+            if (adminLoaded && widgetLoaded) {
+                messages.push('<div class="status success">✓ Both panels ready - You can now test synchronization</div>');
+            }
+            
+            statusDiv.innerHTML = messages.join('');
+        }
+        
+        function refreshAdmin() {
+            const iframe = document.getElementById('admin-iframe');
+            iframe.src = iframe.src;
+            adminLoaded = false;
+        }
+        
+        function refreshWidget() {
+            const iframe = document.getElementById('widget-iframe');
+            iframe.src = iframe.src;
+            widgetLoaded = false;
+        }
+        
+        function testApiSync() {
+            fetch('http://localhost:5000/api/widget/data?partner=demo-casino')
+                .then(response => response.json())
+                .then(data => {
+                    const statusDiv = document.getElementById('status-messages');
+                    const featuredCount = data.boxes ? data.boxes.filter(box => box.isFeatured).length : 0;
+                    const totalBoxes = data.boxes ? data.boxes.length : 0;
+                    
+                    statusDiv.innerHTML += `<div class="status success">✓ API Sync Test: ${totalBoxes} boxes available, ${featuredCount} featured</div>`;
+                    console.log('Widget data sync test:', data);
+                })
+                .catch(error => {
+                    const statusDiv = document.getElementById('status-messages');
+                    statusDiv.innerHTML += '<div class="status error">✗ API sync test failed: ' + error.message + '</div>';
+                    console.error('API sync test error:', error);
+                });
+        }
+        
+        // Auto-test every 10 seconds to verify continuous sync
+        setInterval(() => {
+            if (adminLoaded && widgetLoaded) {
+                testApiSync();
+            }
+        }, 10000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Riches - Mystery Box Integration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: #fff;
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid rgba(79, 134, 247, 0.5);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4F86F7, #CC33FF);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(79, 134, 247, 0.5);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .widget-section {
+            background: rgba(21, 23, 41, 0.6);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+            border: 1px solid rgba(79, 134, 247, 0.3);
+        }
+        
+        .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .widget-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4F86F7, #CC33FF);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .api-status {
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+        
+        .status-connected {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid #22c55e;
+        }
+        
+        .status-disconnected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+        
+        .box-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 20px 0;
+        }
+        
+        .mystery-box {
+            background: rgba(21, 23, 41, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .mystery-box:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 40px rgba(79, 134, 247, 0.3);
+            border-color: rgba(79, 134, 247, 0.4);
+        }
+        
+        .box-rarity {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .rarity-common { background: #6b7280; }
+        .rarity-uncommon { background: #10b981; }
+        .rarity-rare { background: #3b82f6; }
+        .rarity-epic { background: #8b5cf6; }
+        .rarity-legendary { background: #f59e0b; }
+        .rarity-mythical { background: #ef4444; }
+        
+        .box-image {
+            width: 100%;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .box-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+            line-height: 1.2;
+            padding: 0 20px;
+        }
+        
+        .box-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 0 20px;
+        }
+        
+        .box-price {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 16px;
+            padding: 0 20px;
+        }
+        
+        .open-button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #FF6B35, #0079F2);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .open-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.4);
+        }
+        
+        .open-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .config-panel {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .config-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            align-items: center;
+        }
+        
+        .config-label {
+            min-width: 120px;
+            font-weight: bold;
+        }
+        
+        .config-input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #555;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .config-button {
+            padding: 10px 20px;
+            background: #FF6B35;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .result-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        
+        .result-content {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            padding: 40px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #FF6B35;
+            max-width: 500px;
+        }
+        
+        .result-item {
+            font-size: 1.5em;
+            color: #FF6B35;
+            margin: 20px 0;
+        }
+        
+        .close-button {
+            background: #0079F2;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #FF6B35;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Rolling Riches</h1>
+        <p>Premium Mystery Box Experience</p>
+    </div>
+    
+    <div class="container">
+        <div class="config-panel">
+            <h3>API Configuration</h3>
+            <div class="config-row">
+                <label class="config-label">API Endpoint:</label>
+                <input type="text" id="apiEndpoint" class="config-input" value="http://localhost:5000" placeholder="http://localhost:5000">
+            </div>
+            <div class="config-row">
+                <label class="config-label">API Key:</label>
+                <input type="password" id="apiKey" class="config-input" value="test" placeholder="Enter your API key">
+            </div>
+            <div class="config-row">
+                <button class="config-button" onclick="testConnection()">Test Connection</button>
+                <button class="config-button" onclick="loadBoxes()">Load Boxes</button>
+            </div>
+        </div>
+        
+        <div class="widget-section">
+            <div class="widget-header">
+                <h2 class="widget-title">Mystery Boxes</h2>
+                <div id="apiStatus" class="api-status status-disconnected">Disconnected</div>
+            </div>
+            
+            <div id="boxGrid" class="box-grid">
+                <div style="text-align: center; grid-column: 1/-1; padding: 40px; color: #888;">
+                    Click "Load Boxes" to display available mystery boxes
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="resultModal" class="result-modal">
+        <div class="result-content">
+            <h3>Box Opened!</h3>
+            <div id="resultItem" class="result-item">Loading...</div>
+            <div id="resultRarity"></div>
+            <button class="close-button" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+    
+    <script>
+        let apiConfig = {
+            endpoint: 'http://localhost:5000',
+            apiKey: 'test'
+        };
+        
+        // Load saved config
+        if (localStorage.getItem('rolling-riches-config')) {
+            apiConfig = JSON.parse(localStorage.getItem('rolling-riches-config'));
+            document.getElementById('apiEndpoint').value = apiConfig.endpoint;
+            document.getElementById('apiKey').value = apiConfig.apiKey;
+        }
+        
+        function saveConfig() {
+            apiConfig.endpoint = document.getElementById('apiEndpoint').value;
+            apiConfig.apiKey = document.getElementById('apiKey').value;
+            localStorage.setItem('rolling-riches-config', JSON.stringify(apiConfig));
+        }
+        
+        async function apiRequest(endpoint, options = {}) {
+            saveConfig();
+            
+            const url = `${apiConfig.endpoint}${endpoint}`;
+            const headers = {
+                'Content-Type': 'application/json',
+                'X-API-Key': apiConfig.apiKey,
+                ...options.headers
+            };
+            
+            try {
+                const response = await fetch(url, {
+                    ...options,
+                    headers
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API Request failed:', error);
+                throw error;
+            }
+        }
+        
+        async function testConnection() {
+            const statusEl = document.getElementById('apiStatus');
+            statusEl.textContent = 'Testing...';
+            statusEl.className = 'api-status status-disconnected';
+            
+            try {
+                const result = await apiRequest('/api/v1/boxes');
+                statusEl.textContent = 'Connected';
+                statusEl.className = 'api-status status-connected';
+                alert(`Connection successful! Found ${result.data?.length || 0} boxes.`);
+            } catch (error) {
+                statusEl.textContent = 'Failed';
+                statusEl.className = 'api-status status-disconnected';
+                alert(`Connection failed: ${error.message}`);
+            }
+        }
+        
+        async function loadBoxes() {
+            const gridEl = document.getElementById('boxGrid');
+            gridEl.innerHTML = '<div style="text-align: center; grid-column: 1/-1; padding: 40px;"><div class="loading"></div> Loading boxes...</div>';
+            
+            try {
+                const result = await apiRequest('/api/v1/boxes');
+                displayBoxes(result.data || []);
+                
+                const statusEl = document.getElementById('apiStatus');
+                statusEl.textContent = 'Connected';
+                statusEl.className = 'api-status status-connected';
+            } catch (error) {
+                gridEl.innerHTML = `<div style="text-align: center; grid-column: 1/-1; padding: 40px; color: #ef4444;">Failed to load boxes: ${error.message}</div>`;
+                
+                const statusEl = document.getElementById('apiStatus');
+                statusEl.textContent = 'Failed';
+                statusEl.className = 'api-status status-disconnected';
+            }
+        }
+        
+        function displayBoxes(boxes) {
+            const gridEl = document.getElementById('boxGrid');
+            
+            if (!boxes.length) {
+                gridEl.innerHTML = '<div style="text-align: center; grid-column: 1/-1; padding: 40px; color: #888;">No boxes available</div>';
+                return;
+            }
+            
+            gridEl.innerHTML = boxes.map(box => `
+                <div class="mystery-box" onclick="openBox(${box.id})">
+                    <div class="box-rarity rarity-${box.rarity}">${box.rarity}</div>
+                    <div class="box-image" style="background-image: url('${box.imageUrl || ''}')"></div>
+                    <div class="box-name">${box.name}</div>
+                    <div class="box-description">${box.description}</div>
+                    <div class="box-price">$${box.price}</div>
+                    <button class="open-button" onclick="event.stopPropagation(); openBox(${box.id})">
+                        Open Box
+                    </button>
+                </div>
+            `).join('');
+        }
+        
+        async function openBox(boxId) {
+            const modal = document.getElementById('resultModal');
+            const resultItem = document.getElementById('resultItem');
+            const resultRarity = document.getElementById('resultRarity');
+            
+            modal.style.display = 'flex';
+            resultItem.innerHTML = '<div class="loading"></div> Opening box...';
+            resultRarity.textContent = '';
+            
+            try {
+                const result = await apiRequest('/api/v1/open-box', {
+                    method: 'POST',
+                    body: JSON.stringify({ boxId })
+                });
+                
+                if (result.success && result.data?.item) {
+                    const item = result.data.item;
+                    resultItem.textContent = item.name;
+                    resultRarity.innerHTML = `<div class="box-rarity rarity-${item.rarity}" style="position: static; margin: 10px auto; display: inline-block;">${item.rarity}</div>`;
+                } else {
+                    resultItem.textContent = 'Error opening box';
+                    resultRarity.textContent = result.message || 'Unknown error';
+                }
+            } catch (error) {
+                resultItem.textContent = 'Failed to open box';
+                resultRarity.textContent = error.message;
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('resultModal').style.display = 'none';
+        }
+        
+        // Auto-load boxes on page load
+        window.addEventListener('load', () => {
+            setTimeout(loadBoxes, 1000);
+        });
+    </script>
+</body>
+</html>

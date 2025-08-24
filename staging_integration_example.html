@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolling Riches - Integration Example</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .integration-section {
+            background: rgba(21, 23, 41, 0.6);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(79, 134, 247, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            margin: 30px 0;
+        }
+        .iframe-container {
+            border: 2px solid rgba(79, 134, 247, 0.5);
+            border-radius: 16px;
+            overflow: hidden;
+            background: rgba(21, 23, 41, 0.4);
+        }
+        iframe {
+            width: 100%;
+            border: none;
+            min-height: 600px;
+        }
+        .code-block {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .option {
+            background: #333;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .pros {
+            color: #22c55e;
+        }
+        .cons {
+            color: #ef4444;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 style="background: linear-gradient(135deg, #4F86F7, #CC33FF); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2.5em; font-weight: 700;">Rolling Riches B2B Integration</h1>
+            <p>Choose your preferred integration method for staging.rollingriches.com</p>
+        </div>
+
+        <div class="integration-section">
+            <h2>Option 1: Iframe Integration (Recommended)</h2>
+            
+            <div class="option">
+                <h3 class="pros">✓ Advantages</h3>
+                <ul class="pros">
+                    <li>Drop-in integration - just add one HTML tag</li>
+                    <li>No JavaScript conflicts with your existing site</li>
+                    <li>Automatic updates from our platform</li>
+                    <li>Zero maintenance on your end</li>
+                    <li>Consistent styling and functionality</li>
+                </ul>
+                
+                <h3 class="cons">✗ Limitations</h3>
+                <ul class="cons">
+                    <li>Fixed size iframe boundaries</li>
+                    <li>Limited customization of internal elements</li>
+                </ul>
+            </div>
+
+            <h3>Implementation:</h3>
+            <div class="code-block">
+&lt;iframe 
+  src="http://localhost:5000/iframe_widget.html" 
+  width="100%" 
+  height="700"
+  frameborder="0"
+  style="border-radius: 10px;"&gt;
+&lt;/iframe&gt;
+            </div>
+
+            <h3>Live Preview:</h3>
+            <div class="iframe-container">
+                <iframe src="http://localhost:5000/iframe_widget.html" height="700"></iframe>
+            </div>
+        </div>
+
+        <div class="integration-section">
+            <h2>Option 2: JavaScript Widget Integration</h2>
+            
+            <div class="option">
+                <h3 class="pros">✓ Advantages</h3>
+                <ul class="pros">
+                    <li>Full customization control</li>
+                    <li>Better user experience (no iframe boundaries)</li>
+                    <li>Can integrate with your existing user system</li>
+                    <li>Dynamic sizing and responsive design</li>
+                </ul>
+                
+                <h3 class="cons">✗ Drawbacks</h3>
+                <ul class="cons">
+                    <li>Requires JavaScript integration</li>
+                    <li>Potential styling conflicts</li>
+                    <li>Need to handle API calls from your frontend</li>
+                    <li>More complex user balance management</li>
+                </ul>
+            </div>
+
+            <h3>Implementation:</h3>
+            <div class="code-block">
+&lt;div id="mystery-boxes"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+const apiConfig = {
+  endpoint: 'http://localhost:5000',
+  apiKey: 'test'
+};
+
+async function loadMysteryBoxes() {
+  const response = await fetch(`${apiConfig.endpoint}/api/v1/boxes`, {
+    headers: { 'X-API-Key': apiConfig.apiKey }
+  });
+  const data = await response.json();
+  
+  // Render boxes in your custom styling
+  document.getElementById('mystery-boxes').innerHTML = 
+    data.data.map(box => `
+      &lt;div class="mystery-box" onclick="openBox(${box.id})"&gt;
+        &lt;h3&gt;${box.name}&lt;/h3&gt;
+        &lt;p&gt;$${box.price}&lt;/p&gt;
+      &lt;/div&gt;
+    `).join('');
+}
+
+async function openBox(boxId) {
+  const response = await fetch(`${apiConfig.endpoint}/api/v1/open-box`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'X-API-Key': apiConfig.apiKey 
+    },
+    body: JSON.stringify({
+      boxId: boxId,
+      userId: 'your_user_id',
+      userBalance: 1000
+    })
+  });
+  const result = await response.json();
+  alert(`You won: ${result.data.item.name}!`);
+}
+
+loadMysteryBoxes();
+&lt;/script&gt;
+            </div>
+        </div>
+
+        <div class="integration-section">
+            <h2>Recommendation for staging.rollingriches.com</h2>
+            <p><strong>Go with the iframe approach</strong> for fastest implementation:</p>
+            <ol>
+                <li>Copy the iframe code above</li>
+                <li>Paste it into your staging site where you want the mystery boxes</li>
+                <li>Adjust the height and styling to match your design</li>
+                <li>Test the functionality immediately</li>
+            </ol>
+            
+            <p>You can always switch to the JavaScript widget later for more customization once you've validated the integration works.</p>
+        </div>
+    </div>
+</body>
+</html>
